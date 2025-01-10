@@ -69,6 +69,7 @@ const authSlice = createSlice({
             state.user = null;
             state.token = null;
             state.error = null;
+            localStorage.removeItem("user"); // Or remove the user from wherever you store it
             localStorage.removeItem("token"); // Or remove the token from wherever you store it
         },
         setUser: (state, action: PayloadAction<User>) => {

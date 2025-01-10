@@ -16,6 +16,9 @@ import ArticleEdit from "@/pages/admin/Articles/ArticleEdit";
 // import paths
 import { paths } from "./paths";
 
+// Import ProtectedRoute
+import ProtectedRoute from "@/components/ProtectedRoute";
+
 export const router = createBrowserRouter([
     {
         element: <PublicLayout />,
@@ -35,7 +38,11 @@ export const router = createBrowserRouter([
         ],
     },
     {
-        element: <AdminLayout />,
+        element: (
+            <ProtectedRoute>
+                <AdminLayout />
+            </ProtectedRoute>
+        ),
         children: [
             {
                 path: paths.admin.dashboard,

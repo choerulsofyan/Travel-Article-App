@@ -1,6 +1,6 @@
 // src/pages/auth/Login.tsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks"; // Import useAppDispatch and useAppSelector
 import { login, clearError } from "@/store/modules/auth/authSlice";
 import { LoginCredentials } from "@/types/auth";
@@ -9,8 +9,12 @@ import { paths } from "@/routes/paths";
 const Login: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const location = useLocation(); // Get the current location
     const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
     const error = useAppSelector((state) => state.auth.error);
+
+    // Get the "from" state to know where the user came from
+    const from = (location.state as { from: string })?.from || paths.admin.dashboard;
 
     const [formData, setFormData] = useState<LoginCredentials>({
         identifier: "",
@@ -20,9 +24,10 @@ const Login: React.FC = () => {
     useEffect(() => {
         // If user is authenticated, redirect to admin dashboard
         if (isAuthenticated) {
-            navigate(paths.admin.dashboard);
+            // navigate(paths.admin.dashboard);
+            navigate(from, { replace: true }); // Redirect to intended page or admin dashboard
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate, from]);
 
     useEffect(() => {
         return () => {
