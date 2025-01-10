@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import articlesApi from "@/api/modules/articlesApi";
 import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 
@@ -6,17 +6,34 @@ interface ArticlesState {
     articles: Article[];
     loading: boolean;
     error: string | null;
+    hasMore: boolean; // Add hasMore flag for infinite scrolling
+    page: number; // Add page number for tracking pagination
+    pageSize: number;
 }
 
 const initialState: ArticlesState = {
     articles: [],
     loading: false,
     error: null,
+    hasMore: true, // Initially assume there are more articles to fetch
+    page: 1,
+    pageSize: 10,
 };
 
-export const fetchArticles = createAsyncThunk("articles/fetchArticles", async () => {
-    const response = await articlesApi.getArticles();
-    return response.data.data;
+export const fetchArticles = createAsyncThunk<
+    { articles: Article[]; page: number; pageSize: number },
+    { page: number; pageSize: number },
+    { rejectValue: string }
+>("articles/fetchArticles", async ({ page, pageSize }, { rejectWithValue }) => {
+    try {
+        const response = await articlesApi.getArticles(page, pageSize);
+        return { articles: response.data.data, page, pageSize };
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data.message || "Failed to fetch articles");
+    }
 });
 
 export const createArticle = createAsyncThunk<Article, CreateArticlePayload, { rejectValue: string }>(
@@ -85,7 +102,14 @@ export const deleteArticle = createAsyncThunk<
 const articlesSlice = createSlice({
     name: "articles",
     initialState,
-    reducers: {},
+    reducers: {
+        resetArticles: (state) => {
+            state.articles = [];
+            state.page = 1;
+            state.pageSize = 10;
+            state.hasMore = true;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchArticles.pending, (state) => {
@@ -94,11 +118,17 @@ const articlesSlice = createSlice({
             })
             .addCase(fetchArticles.fulfilled, (state, action) => {
                 state.loading = false;
-                state.articles = action.payload;
+                state.articles = [...state.articles, ...action.payload.articles];
+                state.hasMore = action.payload.articles.length === state.pageSize;
+                state.page = action.payload.page + 1;
             })
             .addCase(fetchArticles.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message ?? "Failed to fetch articles";
+                state.error = action.payload || "Failed to fetch articles";
+            })
+            .addCase(deleteArticle.fulfilled, (state, action) => {
+                // Remove the deleted article from the state
+                state.articles = state.articles.filter((article) => article.documentId !== action.payload);
             })
             .addCase(fetchArticleById.fulfilled, (state, action) => {
                 // You can update the state with the fetched article if needed
@@ -111,15 +141,9 @@ const articlesSlice = createSlice({
                 if (index !== -1) {
                     state.articles[index] = action.payload;
                 }
-            })
-            .addCase(deleteArticle.fulfilled, (state, action) => {
-                // Remove the deleted article from the state
-                state.articles = state.articles.filter((article) => article.documentId !== action.payload);
-            })
-            .addCase(deleteArticle.rejected, (state, action) => {
-                state.error = action.payload || "Failed to delete article";
             });
     },
 });
 
+export const { resetArticles } = articlesSlice.actions;
 export default articlesSlice.reducer;
