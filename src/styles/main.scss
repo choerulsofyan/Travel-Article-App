@@ -1,1 +1,30 @@
 @import "bootstrap/scss/bootstrap";
+
+body {
+    background-color: #f8f9fa;
+}
+.sidebar {
+    background-color: #2a3f54;
+    color: #fff;
+    height: 100vh;
+    padding-top: 20px;
+}
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+}
+.sidebar .nav-link.active {
+    background-color: #1a2732;
+}
+.content {
+    padding: 20px;
+}
+.form-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.form-section h5 {
+    margin-bottom: 20px;
+}

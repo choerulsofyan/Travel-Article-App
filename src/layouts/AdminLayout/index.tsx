@@ -5,13 +5,15 @@ import AdminNavbar from "@/components/organisms/AdminNavbar";
 
 const AdminLayout: React.FC = () => {
     return (
-        <div className="admin-layout">
-            <AdminNavbar />
-            <main>
-                <div className="container mt-4">
-                    <Outlet /> {/* Render nested routes here */}
-                </div>
-            </main>
+        <div className="container-fluid">
+            <div className="row">
+                <AdminNavbar />
+                <main role="main" className="col-md-9 ml-sm-auto col-lg-10 px-4 content">
+                    <div className="container">
+                        <Outlet /> {/* Render nested routes here */}
+                    </div>
+                </main>
+            </div>
         </div>
     );
 };

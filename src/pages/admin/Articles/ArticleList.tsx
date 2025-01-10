@@ -38,7 +38,9 @@ const ArticleList: React.FC = () => {
 
     return (
         <div>
-            <h1>Articles</h1>
+            <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 className="h2">Article List</h1>
+            </div>
             <Link to={paths.admin.createArticle} className="btn btn-primary">
                 Create Article
             </Link>
@@ -60,7 +62,7 @@ const ArticleList: React.FC = () => {
                                     Edit
                                 </Link>
                                 <button
-                                    className="btn btn-danger btn-sm"
+                                    className="btn btn-danger ms-2"
                                     onClick={() => {
                                         if (article.documentId) {
                                             handleDelete(article.documentId);
