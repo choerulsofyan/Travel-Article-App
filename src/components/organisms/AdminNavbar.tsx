@@ -35,6 +35,12 @@ const AdminNavbar: React.FC = () => {
                         </Link>
                     </li>
                     <li className="nav-item">
+                        <Link className="nav-link" to={paths.admin.comments}>
+                            <i className="fas fa-file-alt"></i>
+                            Comments
+                        </Link>
+                    </li>
+                    <li className="nav-item">
                         <button className="nav-link" onClick={handleLogout}>
                             <i className="fas fa-th"></i>
                             Logout

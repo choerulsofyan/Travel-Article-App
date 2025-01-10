@@ -1,34 +1,34 @@
-// src/pages/admin/Categories/CategoryList.tsx
+// src/pages/admin/Comments/CommentList.tsx
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { fetchCategories, deleteCategory } from "@/store/modules/categories/categoriesSlice";
+import { fetchComments, deleteComment } from "@/store/modules/comments/commentsSlice";
+import { Link } from "react-router-dom";
 import { paths } from "@/routes/paths";
 
-const CategoryList: React.FC = () => {
+const CommentList: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { categories, loading, error } = useAppSelector((state) => state.categories);
+    const { comments, loading, error } = useAppSelector((state) => state.comments);
 
     useEffect(() => {
-        dispatch(fetchCategories());
+        dispatch(fetchComments());
     }, [dispatch]);
 
     const handleDelete = (documentId: string) => {
-        if (window.confirm("Are you sure you want to delete this category?")) {
-            dispatch(deleteCategory(documentId))
+        if (window.confirm("Are you sure you want to delete this comment?")) {
+            dispatch(deleteComment(documentId))
                 .unwrap()
                 .then(() => {
                     // Optional: Display a success message
                 })
                 .catch((error) => {
-                    console.error("Error deleting category:", error);
+                    console.error("Error deleting comment:", error);
                     // Handle error (e.g., display an error message)
                 });
         }
     };
 
     if (loading) {
-        return <div>Loading categories...</div>;
+        return <div>Loading comments...</div>;
     }
 
     if (error) {
@@ -37,28 +37,28 @@ const CategoryList: React.FC = () => {
 
     return (
         <div>
-            <h1>Categories</h1>
-            <Link to={paths.admin.createCategory} className="btn btn-primary">
-                Create Category
+            <h1>Comments</h1>
+            <Link to={paths.admin.createComment} className="btn btn-primary">
+                Create Comment
             </Link>
             <table className="table">
                 <thead>
                     <tr>
                         <th>Document ID</th>
-                        <th>Name</th>
+                        <th>Content</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {categories.map((category) => (
-                        <tr key={category.documentId}>
-                            <td>{category.documentId}</td>
-                            <td>{category.name}</td>
+                    {comments.map((comment) => (
+                        <tr key={comment.documentId}>
+                            <td>{comment.documentId}</td>
+                            <td>{comment.content}</td>
                             <td>
-                                <Link to={paths.admin.editCategory.replace(":documentId", category.documentId)} className="btn btn-secondary">
+                                <Link to={paths.admin.editComment.replace(":documentId", comment.documentId)} className="btn btn-secondary">
                                     Edit
                                 </Link>
-                                <button className="btn btn-danger" onClick={() => handleDelete(category.documentId)}>
+                                <button className="btn btn-danger" onClick={() => handleDelete(comment.documentId)}>
                                     Delete
                                 </button>
                             </td>
@@ -70,4 +70,4 @@ const CategoryList: React.FC = () => {
     );
 };
 
-export default CategoryList;
+export default CommentList;

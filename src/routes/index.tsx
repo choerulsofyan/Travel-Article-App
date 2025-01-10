@@ -15,6 +15,9 @@ import ArticleEdit from "@/pages/admin/Articles/ArticleEdit";
 import CategoryList from "@/pages/admin/Categories/CategoryList";
 import CategoryCreate from "@/pages/admin/Categories/CategoryCreate";
 import CategoryEdit from "@/pages/admin/Categories/CategoryEdit";
+import CommentList from "@/pages/admin/Comments/CommentList";
+import CommentCreate from "@/pages/admin/Comments/CommentCreate";
+import CommentEdit from "@/pages/admin/Comments/CommentEdit";
 
 // import paths
 import { paths } from "./paths";
@@ -74,6 +77,18 @@ export const router = createBrowserRouter([
             {
                 path: paths.admin.editCategory,
                 element: <CategoryEdit />,
+            },
+            {
+                path: paths.admin.comments,
+                element: <CommentList />,
+            },
+            {
+                path: paths.admin.createComment,
+                element: <CommentCreate />,
+            },
+            {
+                path: paths.admin.editComment,
+                element: <CommentEdit />,
             },
         ],
     },

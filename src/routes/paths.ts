@@ -10,5 +10,8 @@ export const paths = {
         categories: "/admin/categories",
         createCategory: "/admin/categories/create",
         editCategory: "/admin/categories/:documentId/edit",
+        comments: "/admin/comments",
+        createComment: "/admin/comments/create", // Add create path
+        editComment: "/admin/comments/:documentId/edit", // Add edit path
     },
 };
