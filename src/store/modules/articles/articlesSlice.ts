@@ -57,7 +57,7 @@ export const fetchArticleById = createAsyncThunk<
 >("articles/fetchArticleById", async (documentId, { rejectWithValue }) => {
     try {
         const response = await articlesApi.getArticle(documentId);
-        return response.data; // response.data.data; // Assuming your API returns the article data
+        return response.data.data; // response.data.data; // Assuming your API returns the article data
     } catch (err: any) {
         if (!err.response) {
             throw err;
@@ -87,6 +87,14 @@ const articlesSlice = createSlice({
             .addCase(fetchArticleById.fulfilled, (state, action) => {
                 // You can update the state with the fetched article if needed
                 // For example: state.currentArticle = action.payload;
+            })
+            .addCase(updateArticle.fulfilled, (state, action) => {
+                const index = state.articles.findIndex(
+                    (article) => article.documentId === action.payload.documentId, // Use documentId for comparison
+                );
+                if (index !== -1) {
+                    state.articles[index] = action.payload;
+                }
             });
     },
 });

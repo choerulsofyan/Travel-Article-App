@@ -10,12 +10,12 @@ import { Article } from "@/types/articles";
 const ArticleEdit: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>(); // Get article ID from URL params
+    const { documentId } = useParams<{ documentId: string }>(); // Get article ID from URL params
     const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
 
     useEffect(() => {
-        if (id) {
-            dispatch(fetchArticleById(id))
+        if (documentId) {
+            dispatch(fetchArticleById(documentId))
                 .unwrap()
                 .then((article) => {
                     setCurrentArticle(article);
@@ -25,7 +25,7 @@ const ArticleEdit: React.FC = () => {
                     // Handle error, e.g., redirect to an error page or display an error message
                 });
         }
-    }, [dispatch, id]);
+    }, [dispatch, documentId]);
 
     const handleSuccess = () => {
         navigate(paths.admin.articles); // Redirect to articles list after successful update

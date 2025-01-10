@@ -45,11 +45,11 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
 
         const categoryId = category || 0;
 
-        if (article) {
+        if (article && article.documentId) {
             // Update existing article
             dispatch(
                 updateArticle({
-                    id: article.id,
+                    documentId: article.documentId,
                     payload: { data: { ...formData, category: categoryId } },
                 }),
             )
