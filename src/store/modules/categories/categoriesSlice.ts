@@ -21,6 +21,22 @@ const initialState: CategoriesState = {
     pageSize: 10,
 };
 
+export const fetchAllCategories = createAsyncThunk<
+    Category[], // Return type (array of all categories)
+    void, // No arguments needed
+    { rejectValue: string }
+>("categories/fetchAllCategories", async (_, { rejectWithValue }) => {
+    try {
+        const response = await categoriesApi.getAllCategories(); // Assuming this fetches all
+        return response.data.data;
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data.message || "Failed to fetch categories");
+    }
+});
+
 export const fetchCategories = createAsyncThunk<
     { categories: Category[]; page: number; pageSize: number },
     { page: number; pageSize: number },
@@ -146,6 +162,13 @@ const categoriesSlice = createSlice({
                 } else {
                     state.categories.push(action.payload);
                 }
+            })
+            .addCase(fetchAllCategories.fulfilled, (state, action) => {
+                // Replace the existing categories with all fetched categories
+                state.categories = action.payload;
+            })
+            .addCase(fetchAllCategories.rejected, (state, action) => {
+                state.error = action.payload || "Failed to fetch all categories";
             });
     },
 });

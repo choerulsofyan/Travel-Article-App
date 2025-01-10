@@ -4,7 +4,9 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createArticle, updateArticle } from "@/store/modules/articles/articlesSlice";
 import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 import { Category } from "@/types/categories";
-import { fetchCategories } from "@/store/modules/categories/categoriesSlice";
+import { fetchAllCategories } from "@/store/modules/categories/categoriesSlice";
+import ImageUpload from "./ImageUpload";
+import { Image } from "@/types/upload";
 
 interface ArticleFormProps {
     article?: Article; // Optional article prop for editing
@@ -14,8 +16,16 @@ interface ArticleFormProps {
 const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     const dispatch = useAppDispatch();
 
+    const handleImageUpload = (image: Image) => {
+        setFormData({
+            ...formData,
+            cover_image_url: image.url,
+        });
+    };
+
     // Fetch categories from Redux store
     const categories = useAppSelector((state) => state.categories.categories);
+    const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
 
     const [formData, setFormData] = useState<Omit<CreateArticlePayload["data"], "category"> | Omit<UpdateArticlePayload["data"], "category">>({
         title: article?.title || "",
@@ -26,9 +36,15 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     const [category, setCategory] = useState<number>(article?.category?.id || 0);
 
     useEffect(() => {
-        // Fetch categories if they aren't already in the store
         if (categories.length === 0) {
-            dispatch(fetchCategories());
+            setLoadingCategories(true);
+            dispatch(fetchAllCategories()) // Use fetchAllCategories instead of fetchCategories
+                .unwrap()
+                .then(() => setLoadingCategories(false))
+                .catch((error) => {
+                    console.error("Error fetching categories:", error);
+                    setLoadingCategories(false);
+                });
         }
     }, [dispatch, categories]);
 
@@ -108,7 +124,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
                     required
                 />
             </div>
-            <div className="mb-3">
+            {/* <div className="mb-3">
                 <label htmlFor="cover_image_url" className="form-label">
                     Cover Image URL
                 </label>
@@ -120,19 +136,31 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
                     value={formData.cover_image_url}
                     onChange={handleChange}
                 />
+            </div> */}
+            <div className="mb-3">
+                <label htmlFor="cover_image_url" className="form-label">
+                    Cover Image
+                </label>
+                <ImageUpload onImageUpload={handleImageUpload} />
+                {/* Display image preview if needed */}
+                {formData.cover_image_url && <img src={formData.cover_image_url} alt="Cover Preview" style={{ width: "200px", marginTop: "10px" }} />}
             </div>
             <div className="mb-3">
                 <label htmlFor="category" className="form-label">
                     Category
                 </label>
-                <select className="form-select" id="category" name="category" value={category} onChange={handleCategoryChange}>
-                    <option value={0}>Select Category</option>
-                    {categories.map((category: Category) => (
-                        <option key={category.id} value={category.id}>
-                            {category.name}
-                        </option>
-                    ))}
-                </select>
+                {loadingCategories ? (
+                    <div>Loading categories...</div>
+                ) : (
+                    <select className="form-select" id="category" name="category" value={category} onChange={handleCategoryChange}>
+                        <option value={0}>Select Category</option>
+                        {categories.map((category: Category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                )}
             </div>
             <button type="submit" className="btn btn-primary">
                 {article ? "Update" : "Create"} Article
