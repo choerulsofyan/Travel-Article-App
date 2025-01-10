@@ -13,7 +13,7 @@ const articlesApi = {
     createArticle: (payload: CreateArticlePayload) => api.post<CreateOrUpdateArticleResponse>("/articles", payload),
     getArticle: (documentId: string) => api.get<ArticleResponse>(`/articles/${documentId}`),
     updateArticle: (documentId: string, payload: UpdateArticlePayload) => api.put<CreateOrUpdateArticleResponse>(`/articles/${documentId}`, payload),
-    deleteArticle: (id: string) => api.delete<any>(`/articles/${id}`),
+    deleteArticle: (documentId: string) => api.delete(`/articles/${documentId}`),
 };
 
 export default articlesApi;

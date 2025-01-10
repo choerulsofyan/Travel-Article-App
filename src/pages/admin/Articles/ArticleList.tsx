@@ -1,7 +1,7 @@
 // src/pages/admin/Articles/ArticleList.tsx
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { fetchArticles } from "@/store/modules/articles/articlesSlice";
+import { fetchArticles, deleteArticle } from "@/store/modules/articles/articlesSlice";
 import { paths } from "@/routes/paths";
 import { RootState } from "@/store/rootReducer";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -13,6 +13,20 @@ const ArticleList: React.FC = () => {
     useEffect(() => {
         dispatch(fetchArticles());
     }, [dispatch]);
+
+    const handleDelete = (documentId: string) => {
+        if (window.confirm("Are you sure you want to delete this article?")) {
+            dispatch(deleteArticle(documentId))
+                .unwrap()
+                .then(() => {
+                    // Optional: Display a success message
+                })
+                .catch((error) => {
+                    console.error("Error deleting article:", error);
+                    // Handle error (e.g., display an error message)
+                });
+        }
+    };
 
     if (loading) {
         return <div>Loading articles...</div>;
@@ -45,7 +59,9 @@ const ArticleList: React.FC = () => {
                                 <Link to={paths.admin.editArticle.replace(":documentId", article.documentId)} className="btn btn-secondary">
                                     Edit
                                 </Link>
-                                {/* Add Delete button with confirmation and dispatch(deleteArticle(article.id)) */}
+                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(article.documentId)}>
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     ))}

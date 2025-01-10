@@ -66,6 +66,22 @@ export const fetchArticleById = createAsyncThunk<
     }
 });
 
+export const deleteArticle = createAsyncThunk<
+    string, // Return type (documentId of the deleted article)
+    string, // Argument type (documentId)
+    { rejectValue: string }
+>("articles/deleteArticle", async (documentId, { rejectWithValue }) => {
+    try {
+        await articlesApi.deleteArticle(documentId);
+        return documentId; // Return the documentId on success
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data.message || "Failed to delete article");
+    }
+});
+
 const articlesSlice = createSlice({
     name: "articles",
     initialState,
@@ -95,6 +111,13 @@ const articlesSlice = createSlice({
                 if (index !== -1) {
                     state.articles[index] = action.payload;
                 }
+            })
+            .addCase(deleteArticle.fulfilled, (state, action) => {
+                // Remove the deleted article from the state
+                state.articles = state.articles.filter((article) => article.documentId !== action.payload);
+            })
+            .addCase(deleteArticle.rejected, (state, action) => {
+                state.error = action.payload || "Failed to delete article";
             });
     },
 });
