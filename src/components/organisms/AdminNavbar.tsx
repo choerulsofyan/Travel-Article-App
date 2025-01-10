@@ -23,6 +23,12 @@ const AdminNavbar: React.FC = () => {
                         </Link>
                     </li>
                     <li className="nav-item">
+                        <Link className="nav-link" to={paths.admin.categories}>
+                            <i className="fas fa-file-alt"></i>
+                            Categories
+                        </Link>
+                    </li>
+                    <li className="nav-item">
                         <Link className="nav-link" to={paths.admin.articles}>
                             <i className="fas fa-file-alt"></i>
                             Articles

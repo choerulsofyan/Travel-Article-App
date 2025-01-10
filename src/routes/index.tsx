@@ -12,6 +12,9 @@ import Dashboard from "@/pages/admin/Dashboard";
 import ArticleList from "@/pages/admin/Articles/ArticleList";
 import ArticleCreate from "@/pages/admin/Articles/ArticleCreate";
 import ArticleEdit from "@/pages/admin/Articles/ArticleEdit";
+import CategoryList from "@/pages/admin/Categories/CategoryList";
+import CategoryCreate from "@/pages/admin/Categories/CategoryCreate";
+import CategoryEdit from "@/pages/admin/Categories/CategoryEdit";
 
 // import paths
 import { paths } from "./paths";
@@ -59,6 +62,18 @@ export const router = createBrowserRouter([
             {
                 path: paths.admin.editArticle,
                 element: <ArticleEdit />,
+            },
+            {
+                path: paths.admin.categories,
+                element: <CategoryList />,
+            },
+            {
+                path: paths.admin.createCategory,
+                element: <CategoryCreate />,
+            },
+            {
+                path: paths.admin.editCategory,
+                element: <CategoryEdit />,
             },
         ],
     },
