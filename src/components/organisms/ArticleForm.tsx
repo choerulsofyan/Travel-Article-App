@@ -1,8 +1,10 @@
 // src/components/organisms/ArticleForm.tsx
 import React, { useState, useEffect } from "react";
-import { useAppDispatch } from "@/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createArticle, updateArticle } from "@/store/modules/articles/articlesSlice";
 import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
+import { Category } from "@/types/categories";
+import { fetchCategories } from "@/store/modules/categories/categoriesSlice";
 
 interface ArticleFormProps {
     article?: Article; // Optional article prop for editing
@@ -12,13 +14,23 @@ interface ArticleFormProps {
 const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     const dispatch = useAppDispatch();
 
+    // Fetch categories from Redux store
+    const categories = useAppSelector((state) => state.categories.categories);
+
     const [formData, setFormData] = useState<Omit<CreateArticlePayload["data"], "category"> | Omit<UpdateArticlePayload["data"], "category">>({
         title: article?.title || "",
         description: article?.description || "",
         cover_image_url: article?.cover_image_url || "",
     });
 
-    const [category, setCategory] = useState<number>(article?.category?.id || 4);
+    const [category, setCategory] = useState<number>(article?.category?.id || 0);
+
+    useEffect(() => {
+        // Fetch categories if they aren't already in the store
+        if (categories.length === 0) {
+            dispatch(fetchCategories());
+        }
+    }, [dispatch, categories]);
 
     useEffect(() => {
         if (article) {
@@ -27,7 +39,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
                 description: article.description,
                 cover_image_url: article.cover_image_url,
             });
-            setCategory(article.category?.id || 4);
+            setCategory(article.category?.id || 0);
         }
     }, [article]);
 
@@ -43,14 +55,14 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const categoryId = category || 0;
-
         if (article && article.documentId) {
             // Update existing article
             dispatch(
                 updateArticle({
                     documentId: article.documentId,
-                    payload: { data: { ...formData, category: categoryId } },
+                    payload: {
+                        data: { ...formData, category: category },
+                    },
                 }),
             )
                 .unwrap()
@@ -63,7 +75,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
                 });
         } else {
             // Create new article
-            dispatch(createArticle({ data: { ...formData, category: categoryId } }))
+            dispatch(createArticle({ data: { ...formData, category: category } }))
                 .unwrap()
                 .then(() => {
                     onSuccess(); // Call the success callback
@@ -113,11 +125,13 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
                 <label htmlFor="category" className="form-label">
                     Category
                 </label>
-                <select className="form-select" id="category" name="category" value={formData.category} onChange={handleCategoryChange}>
+                <select className="form-select" id="category" name="category" value={category} onChange={handleCategoryChange}>
                     <option value={0}>Select Category</option>
-                    {/* Fetch categories from API and map them to options */}
-                    {/* <option value={1}>Category 1</option>
-          <option value={2}>Category 2</option> */}
+                    {categories.map((category: Category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.name}
+                        </option>
+                    ))}
                 </select>
             </div>
             <button type="submit" className="btn btn-primary">
