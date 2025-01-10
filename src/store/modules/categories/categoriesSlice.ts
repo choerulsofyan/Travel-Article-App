@@ -7,29 +7,35 @@ interface CategoriesState {
     categories: Category[];
     loading: boolean;
     error: string | null;
+    hasMore: boolean;
+    page: number;
+    pageSize: number;
 }
 
 const initialState: CategoriesState = {
     categories: [],
     loading: false,
     error: null,
+    hasMore: true,
+    page: 1,
+    pageSize: 10,
 };
 
-// --- Async Thunks ---
-export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue: string }>(
-    "categories/fetchCategories",
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await categoriesApi.getAllCategories();
-            return response.data.data;
-        } catch (err: any) {
-            if (!err.response) {
-                throw err;
-            }
-            return rejectWithValue(err.response.data.message || "Failed to fetch categories");
+export const fetchCategories = createAsyncThunk<
+    { categories: Category[]; page: number; pageSize: number },
+    { page: number; pageSize: number },
+    { rejectValue: string }
+>("categories/fetchCategories", async ({ page, pageSize }, { rejectWithValue }) => {
+    try {
+        const response = await categoriesApi.getCategories(page, pageSize);
+        return { categories: response.data.data, page, pageSize };
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
         }
-    },
-);
+        return rejectWithValue(err.response.data.message || "Failed to fetch categories");
+    }
+});
 
 export const fetchCategoryById = createAsyncThunk<Category, string, { rejectValue: string }>(
     "categories/fetchCategoryById",
@@ -95,7 +101,14 @@ export const deleteCategory = createAsyncThunk<string, string, { rejectValue: st
 const categoriesSlice = createSlice({
     name: "categories",
     initialState,
-    reducers: {},
+    reducers: {
+        resetCategories: (state) => {
+            state.categories = [];
+            state.page = 1;
+            state.pageSize = 10;
+            state.hasMore = true;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchCategories.pending, (state) => {
@@ -104,7 +117,9 @@ const categoriesSlice = createSlice({
             })
             .addCase(fetchCategories.fulfilled, (state, action) => {
                 state.loading = false;
-                state.categories = action.payload;
+                state.categories = [...state.categories, ...action.payload.categories];
+                state.hasMore = action.payload.categories.length === state.pageSize;
+                state.page = action.payload.page + 1;
             })
             .addCase(fetchCategories.rejected, (state, action) => {
                 state.loading = false;
@@ -135,4 +150,5 @@ const categoriesSlice = createSlice({
     },
 });
 
+export const { resetCategories } = categoriesSlice.actions;
 export default categoriesSlice.reducer;

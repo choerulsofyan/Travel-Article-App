@@ -7,19 +7,28 @@ interface CommentsState {
     comments: Comment[];
     loading: boolean;
     error: string | null;
+    hasMore: boolean;
+    page: number;
+    pageSize: number;
 }
 
 const initialState: CommentsState = {
     comments: [],
     loading: false,
     error: null,
+    hasMore: true,
+    page: 1,
+    pageSize: 10,
 };
 
-// --- Async Thunks ---
-export const fetchComments = createAsyncThunk<Comment[], void, { rejectValue: string }>("comments/fetchComments", async (_, { rejectWithValue }) => {
+export const fetchComments = createAsyncThunk<
+    { comments: Comment[]; page: number; pageSize: number },
+    { page: number; pageSize: number },
+    { rejectValue: string }
+>("comments/fetchComments", async ({ page, pageSize }, { rejectWithValue }) => {
     try {
-        const response = await commentsApi.getAllComments();
-        return response.data.data;
+        const response = await commentsApi.getComments(page, pageSize);
+        return { comments: response.data.data, page, pageSize };
     } catch (err: any) {
         if (!err.response) {
             throw err;
@@ -92,7 +101,14 @@ export const deleteComment = createAsyncThunk<string, string, { rejectValue: str
 const commentsSlice = createSlice({
     name: "comments",
     initialState,
-    reducers: {},
+    reducers: {
+        resetComments: (state) => {
+            state.comments = [];
+            state.page = 1;
+            state.pageSize = 10;
+            state.hasMore = true;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchComments.pending, (state) => {
@@ -101,7 +117,9 @@ const commentsSlice = createSlice({
             })
             .addCase(fetchComments.fulfilled, (state, action) => {
                 state.loading = false;
-                state.comments = action.payload;
+                state.comments = [...state.comments, ...action.payload.comments];
+                state.hasMore = action.payload.comments.length === state.pageSize;
+                state.page = action.payload.page + 1;
             })
             .addCase(fetchComments.rejected, (state, action) => {
                 state.loading = false;
@@ -130,4 +148,5 @@ const commentsSlice = createSlice({
     },
 });
 
+export const { resetComments } = commentsSlice.actions;
 export default commentsSlice.reducer;
