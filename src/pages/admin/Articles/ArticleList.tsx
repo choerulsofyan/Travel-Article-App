@@ -56,10 +56,17 @@ const ArticleList: React.FC = () => {
                             <td>{article.id}</td>
                             <td>{article.title}</td>
                             <td>
-                                <Link to={paths.admin.editArticle.replace(":documentId", article.documentId)} className="btn btn-secondary">
+                                <Link to={paths.admin.editArticle.replace(":documentId", article.documentId as string)} className="btn btn-secondary">
                                     Edit
                                 </Link>
-                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(article.documentId)}>
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => {
+                                        if (article.documentId) {
+                                            handleDelete(article.documentId);
+                                        }
+                                    }}
+                                >
                                     Delete
                                 </button>
                             </td>
