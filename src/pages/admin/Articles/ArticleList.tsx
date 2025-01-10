@@ -42,13 +42,7 @@ const ArticleList: React.FC = () => {
                             <td>{article.id}</td>
                             <td>{article.title}</td>
                             <td>
-                                <Link
-                                    to={paths.admin.editArticle.replace(
-                                        ":id",
-                                        article.id.toString(),
-                                    )}
-                                    className="btn btn-secondary"
-                                >
+                                <Link to={paths.admin.editArticle.replace(":documentId", article.documentId)} className="btn btn-secondary">
                                     Edit
                                 </Link>
                                 {/* Add Delete button with confirmation and dispatch(deleteArticle(article.id)) */}

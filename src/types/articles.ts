@@ -36,16 +36,16 @@ export interface Category {
 
 // Article Type
 export interface Article extends Timestamped {
-    id: number;
-    documentId: string;
+    id?: number;
+    documentId?: string;
     title: string;
     description: string;
     cover_image_url: string;
-    locale: string | null;
-    user: User;
+    locale?: string | null;
+    user?: User;
     category: Category | null;
-    comments: Comment[];
-    localizations: any[]; // Define this more specifically if you have localization data
+    comments?: Comment[];
+    localizations?: any[]; // Define this more specifically if you have localization data
 }
 
 // Pagination Meta Data
@@ -72,18 +72,31 @@ export interface ArticleResponse {
 
 // Create Article Payload
 export interface CreateArticlePayload {
-    title: string;
-    description: string;
-    cover_image_url: string;
-    category: number; // Assuming category is referenced by ID
+    data: {
+        title: string;
+        description: string;
+        cover_image_url: string;
+        category: number; // Assuming category is referenced by ID
+    };
+    // title: string;
+    // description: string;
+    // cover_image_url: string;
+    // category: number; // Assuming category is referenced by ID
 }
 
 // Update Article Payload
 export interface UpdateArticlePayload {
-    title?: string;
-    description?: string;
-    cover_image_url?: string;
-    category?: number; // Assuming category is referenced by ID
+    data: {
+        title: string;
+        description: string;
+        cover_image_url: string;
+        category: number; // Assuming category is referenced by ID
+    };
+    // documentId?: string;
+    // title?: string;
+    // description?: string;
+    // cover_image_url?: string;
+    // category?: number; // Assuming category is referenced by ID
 }
 
 // Update Article Error Response (if not allowed)

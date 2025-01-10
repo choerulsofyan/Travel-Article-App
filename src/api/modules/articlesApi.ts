@@ -1,12 +1,12 @@
 import api from "../index";
-import { Article } from "../../types/articles";
+import { Article, ArticlesResponse, CreateArticlePayload, CreateOrUpdateArticleResponse, UpdateArticlePayload } from "../../types/articles";
 
 const articlesApi = {
-  getArticles: () => api.get("/articles"),
-  createArticle: (article: Article) => api.post<Article>("/articles", article),
-  getArticle: (id: number) => api.get<Article[]>(`/articles/${id}`),
-  updateArticle: (article: Article) => api.put<any>(`/articles/${article.id}`, article),
-  deleteArticle: (id: string) => api.delete<any>(`/articles/${id}`),
+    getArticles: () => api.get("/articles"),
+    createArticle: (payload: CreateArticlePayload) => api.post<CreateOrUpdateArticleResponse>("/articles", payload),
+    getArticle: (documentId: string) => api.get<Article>(`/articles/${documentId}`),
+    updateArticle: (documentId: string, payload: UpdateArticlePayload) => api.put<CreateOrUpdateArticleResponse>(`/articles/${documentId}`, payload),
+    deleteArticle: (id: string) => api.delete<any>(`/articles/${id}`),
 };
 
 export default articlesApi;

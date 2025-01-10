@@ -6,6 +6,6 @@ export const paths = {
         dashboard: "/admin",
         articles: "/admin/articles",
         createArticle: "/admin/articles/create",
-        editArticle: "/admin/articles/:id/edit",
+        editArticle: "/admin/articles/:documentId/edit",
     },
 };
