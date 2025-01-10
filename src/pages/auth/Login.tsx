@@ -1,10 +1,10 @@
 // src/pages/auth/Login.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks"; // Import useAppDispatch and useAppSelector
-import { login, clearError } from "../../store/modules/auth/authSlice";
-import { LoginCredentials } from "../../types/auth";
-import { paths } from "../../routes/paths";
+import { useAppDispatch, useAppSelector } from "@/hooks"; // Import useAppDispatch and useAppSelector
+import { login, clearError } from "@/store/modules/auth/authSlice";
+import { LoginCredentials } from "@/types/auth";
+import { paths } from "@/routes/paths";
 
 const Login: React.FC = () => {
     const dispatch = useAppDispatch();

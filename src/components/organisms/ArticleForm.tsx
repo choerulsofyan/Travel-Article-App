@@ -1,8 +1,8 @@
 // src/components/organisms/ArticleForm.tsx
 import React, { useState, useEffect } from "react";
-import { useAppDispatch } from "../../hooks";
-import { createArticle, updateArticle } from "../../store/modules/articles/articlesSlice";
-import { Article, CreateArticlePayload, UpdateArticlePayload } from "../../types/articles";
+import { useAppDispatch } from "@/hooks";
+import { createArticle, updateArticle } from "@/store/modules/articles/articlesSlice";
+import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 
 interface ArticleFormProps {
     article?: Article; // Optional article prop for editing

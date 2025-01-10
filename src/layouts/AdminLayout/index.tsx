@@ -1,7 +1,7 @@
 // src/layouts/AdminLayout/index.tsx
 import React from "react";
 import { Outlet } from "react-router-dom";
-import AdminNavbar from "../../components/organisms/AdminNavbar";
+import AdminNavbar from "@/components/organisms/AdminNavbar";
 
 const AdminLayout: React.FC = () => {
     return (

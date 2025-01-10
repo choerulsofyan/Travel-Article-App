@@ -1,11 +1,11 @@
 // src/pages/admin/Articles/ArticleEdit.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../hooks"; // Import useAppDispatch and useAppSelector
-import ArticleForm from "../../../components/organisms/ArticleForm";
-import { fetchArticleById } from "../../../store/modules/articles/articlesSlice";
-import { paths } from "../../../routes/paths";
-import { Article } from "../../../types/articles";
+import { useAppDispatch, useAppSelector } from "@/hooks"; // Import useAppDispatch and useAppSelector
+import ArticleForm from "@/components/organisms/ArticleForm";
+import { fetchArticleById } from "@/store/modules/articles/articlesSlice";
+import { paths } from "@/routes/paths";
+import { Article } from "@/types/articles";
 
 const ArticleEdit: React.FC = () => {
     const dispatch = useAppDispatch();

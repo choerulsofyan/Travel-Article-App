@@ -1,13 +1,8 @@
 // src/store/modules/auth/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../rootReducer"; // Import RootState if you need to access other slices
-import authApi from "../../../api/modules/authApi";
-import {
-    LoginCredentials,
-    RegisterCredentials,
-    AuthSuccessResponse,
-    User,
-} from "../../../types/auth";
+import { RootState } from "@/store/rootReducer"; // Import RootState if you need to access other slices
+import authApi from "@/api/modules/authApi";
+import { LoginCredentials, RegisterCredentials, AuthSuccessResponse, User } from "@/types/auth";
 
 // Define the initial state for the auth slice
 interface AuthState {
@@ -49,21 +44,20 @@ export const login = createAsyncThunk<
 });
 
 // --- REGISTER ---
-export const register = createAsyncThunk<
-    AuthSuccessResponse,
-    RegisterCredentials,
-    { rejectValue: string }
->("auth/register", async (credentials, { rejectWithValue }) => {
-    try {
-        const response = await authApi.register(credentials);
-        return response.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
+export const register = createAsyncThunk<AuthSuccessResponse, RegisterCredentials, { rejectValue: string }>(
+    "auth/register",
+    async (credentials, { rejectWithValue }) => {
+        try {
+            const response = await authApi.register(credentials);
+            return response.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data.error.message);
         }
-        return rejectWithValue(err.response.data.error.message);
-    }
-});
+    },
+);
 
 // Auth Slice
 const authSlice = createSlice({

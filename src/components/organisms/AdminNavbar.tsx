@@ -1,9 +1,9 @@
 // src/components/organisms/AdminNavbar.tsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "../../hooks"; // Import useAppDispatch
-import { logout } from "../../store/modules/auth/authSlice";
-import { paths } from "../../routes/paths";
+import { useAppDispatch } from "@/hooks"; // Import useAppDispatch
+import { logout } from "@/store/modules/auth/authSlice";
+import { paths } from "@/routes/paths";
 
 const AdminNavbar: React.FC = () => {
     const dispatch = useAppDispatch();

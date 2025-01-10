@@ -1,7 +1,7 @@
 // src/components/organisms/PublicNavbar.tsx
 import React from "react";
 import { Link } from "react-router-dom";
-import { paths } from "../../routes/paths";
+import { paths } from "@/routes/paths";
 
 const PublicNavbar: React.FC = () => {
     return (

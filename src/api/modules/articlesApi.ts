@@ -1,5 +1,5 @@
-import api from "../index";
-import { Article, ArticlesResponse, CreateArticlePayload, CreateOrUpdateArticleResponse, UpdateArticlePayload } from "../../types/articles";
+import api from "@/api";
+import { Article, ArticlesResponse, CreateArticlePayload, CreateOrUpdateArticleResponse, UpdateArticlePayload } from "@/types/articles";
 
 const articlesApi = {
     getArticles: () => api.get("/articles"),

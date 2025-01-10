@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import articlesApi from "../../../api/modules/articlesApi";
-import { Article, CreateArticlePayload, UpdateArticlePayload } from "../../../types/articles";
+import articlesApi from "@/api/modules/articlesApi";
+import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 
 interface ArticlesState {
     articles: Article[];

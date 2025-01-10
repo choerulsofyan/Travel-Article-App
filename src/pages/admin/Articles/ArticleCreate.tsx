@@ -1,8 +1,8 @@
 // src/pages/admin/Articles/ArticleCreate.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import ArticleForm from "../../../components/organisms/ArticleForm";
-import { paths } from "../../../routes/paths";
+import ArticleForm from "@/components/organisms/ArticleForm";
+import { paths } from "@/routes/paths";
 
 const ArticleCreate: React.FC = () => {
     const navigate = useNavigate();

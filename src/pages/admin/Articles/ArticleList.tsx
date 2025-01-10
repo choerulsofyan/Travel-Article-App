@@ -1,10 +1,10 @@
 // src/pages/admin/Articles/ArticleList.tsx
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { fetchArticles } from "../../../store/modules/articles/articlesSlice";
-import { paths } from "../../../routes/paths";
-import { RootState } from "../../../store/rootReducer";
-import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { fetchArticles } from "@/store/modules/articles/articlesSlice";
+import { paths } from "@/routes/paths";
+import { RootState } from "@/store/rootReducer";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 
 const ArticleList: React.FC = () => {
     const dispatch = useAppDispatch();
