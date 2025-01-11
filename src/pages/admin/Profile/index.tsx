@@ -104,7 +104,7 @@ const Profile: React.FC = () => {
                                     {comment.article && (
                                         <p className="text-gray-600">
                                             On:{" "}
-                                            <Link to={paths.public.articleDetail.replace(":documentId", comment.article.documentId || "")}>
+                                            <Link to={paths.admin.articleDetail.replace(":documentId", comment.article.documentId || "")}>
                                                 {comment.article.title}
                                             </Link>
                                         </p>

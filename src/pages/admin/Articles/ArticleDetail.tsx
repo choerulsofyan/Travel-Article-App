@@ -7,6 +7,8 @@ import { formatIndonesianDateTime } from "@/utils";
 import { Article } from "@/types/articles";
 import Header from "@/components/organisms/Header";
 import ErrorDisplay from "@/components/ErrorDisplay";
+import CommentForm from "@/components/organisms/CommentForm";
+import { User } from "@/types/auth";
 
 const ArticleDetail: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -14,6 +16,7 @@ const ArticleDetail: React.FC = () => {
     const article = useAppSelector((state) => state.articles.articleDetail);
     const loading = useAppSelector((state) => state.articles.loading);
     const error = useAppSelector((state) => state.articles.error);
+    const user = useAppSelector((state) => state.auth.user);
 
     useEffect(() => {
         if (documentId) {
@@ -23,6 +26,12 @@ const ArticleDetail: React.FC = () => {
             dispatch(clearArticleDetail());
         };
     }, [dispatch, documentId]);
+
+    const handleCommentSubmitted = () => {
+        if (documentId) {
+            dispatch(fetchArticleById(documentId));
+        }
+    };
 
     if (loading) {
         return <div className="container mx-auto px-4 py-8">Loading article details...</div>;
@@ -82,8 +91,9 @@ const ArticleDetail: React.FC = () => {
 
                 <div className="mt-8">
                     <h2 className="text-2xl font-bold mb-4">Comments</h2>
+                    {user && <CommentForm articleId={article.id} onCommentSubmitted={handleCommentSubmitted} />}
                     {article.comments.length > 0 ? (
-                        <ul className="space-y-4">
+                        <ul className="space-y-4 mt-8">
                             {article.comments.map((comment) => (
                                 <li key={comment.id} className="border-b pb-4">
                                     <p className="mb-2">{comment.content}</p>

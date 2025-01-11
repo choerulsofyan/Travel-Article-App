@@ -1,19 +1,19 @@
 // src/pages/auth/Login.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/hooks"; // Import useAppDispatch and useAppSelector
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { login, clearError } from "@/store/modules/auth/authSlice";
 import { LoginCredentials } from "@/types/auth";
 import { paths } from "@/routes/paths";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 const Login: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const location = useLocation(); // Get the current location
+    const location = useLocation();
     const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
     const error = useAppSelector((state) => state.auth.error);
 
-    // Get the "from" state to know where the user came from
     const from = (location.state as { from: string })?.from || paths.admin.dashboard;
 
     const [formData, setFormData] = useState<LoginCredentials>({
@@ -22,10 +22,8 @@ const Login: React.FC = () => {
     });
 
     useEffect(() => {
-        // If user is authenticated, redirect to admin dashboard
         if (isAuthenticated) {
-            // navigate(paths.admin.dashboard);
-            navigate(from, { replace: true }); // Redirect to intended page or admin dashboard
+            navigate(from, { replace: true });
         }
     }, [isAuthenticated, navigate, from]);
 
@@ -48,18 +46,18 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="row justify-content-center">
-            <div className="col-md-6">
-                <h2 className="text-center mb-4">Login</h2>
-                {error && <div className="alert alert-danger">{error}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="identifier" className="form-label">
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <div className="w-full max-w-md">
+                <h2 className="text-center text-2xl font-bold mb-8">Login</h2>
+                {error && <ErrorDisplay message={error} />}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label htmlFor="identifier" className="block text-sm font-medium text-gray-700">
                             Email or Username
                         </label>
                         <input
                             type="text"
-                            className="form-control"
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             id="identifier"
                             name="identifier"
                             value={formData.identifier}
@@ -67,13 +65,13 @@ const Login: React.FC = () => {
                             required
                         />
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                             Password
                         </label>
                         <input
                             type="password"
-                            className="form-control"
+                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                             id="password"
                             name="password"
                             value={formData.password}
@@ -81,11 +79,12 @@ const Login: React.FC = () => {
                             required
                         />
                     </div>
-                    <div className="d-grid">
-                        <button type="submit" className="btn btn-primary">
-                            Login
-                        </button>
-                    </div>
+                    <button
+                        type="submit"
+                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Login
+                    </button>
                 </form>
             </div>
         </div>
