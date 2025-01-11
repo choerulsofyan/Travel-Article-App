@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { fetchArticleById, clearArticleDetail } from "@/store/modules/articles/articlesSlice";
 import { formatIndonesianDateTime } from "@/utils";
 import Header from "@/components/organisms/Header";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import CommentForm from "@/components/organisms/CommentForm";
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 const ArticleDetail: React.FC = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const { documentId } = useParams<{ documentId: string }>();
     const article = useAppSelector((state) => state.articles.articleDetail);
     const loading = useAppSelector((state) => state.articles.loading);
@@ -50,6 +52,13 @@ const ArticleDetail: React.FC = () => {
         <div className="container mx-auto px-4 py-8">
             <Header title={article.title} />
             <div className="bg-white shadow rounded-lg p-6">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="inline-flex items-center px-3 py-1 mb-4 text-sm font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                    <ChevronLeftIcon className="h-4 w-4 mr-1" />
+                    Back
+                </button>
                 {article.cover_image_url && (
                     <img src={article.cover_image_url} alt={article.title} className="w-52 h-auto object-cover rounded-lg mb-6" />
                 )}
