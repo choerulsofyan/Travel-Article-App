@@ -7,6 +7,7 @@ import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/art
 import { Category } from "@/types/categories";
 import ImageUpload from "./ImageUpload";
 import { Image } from "@/types/upload";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 interface ArticleFormProps {
     article?: Article;
@@ -17,7 +18,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     const dispatch = useAppDispatch();
     const categories = useAppSelector((state) => state.categories.categories);
     const [loadingCategories, setLoadingCategories] = useState(false);
-    const [error, setError] = useState<string | null>(null); // Add error state
+    const [error, setError] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<Omit<CreateArticlePayload["data"], "category"> | Omit<UpdateArticlePayload["data"], "category">>({
         title: article?.title || "",

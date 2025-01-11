@@ -1,11 +1,14 @@
+// src/api/index.ts
 import axios from "axios";
-import config from "@/config";
+import config from "../config";
+import { store } from "../store/store";
+import { logout } from "@/store/modules/auth/authSlice";
+import { setGlobalError } from "@/store/modules/errors/errorSlice";
 
 const api = axios.create({
     baseURL: config.apiBaseUrl,
 });
 
-// Request interceptor
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
@@ -19,13 +22,24 @@ api.interceptors.request.use(
     },
 );
 
-// Response interceptor (optional) - Handle unauthorized errors
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        return response;
+    },
     (error) => {
-        if (error.response.status === 401) {
-            // Redirect to login or handle unauthorized access
+        if (error.response && error.response.status === 401) {
+            store.dispatch(logout());
         }
+
+        // Dispatch a global error with more detail
+        const defaultMessage = "An unexpected error occurred";
+        const errorDetails = {
+            status: error.response ? error.response.status : null,
+            message: error.response ? error.response.data.error?.message || error.response.data.message || defaultMessage : defaultMessage,
+        };
+
+        store.dispatch(setGlobalError(`${errorDetails.message} (Status Code: ${errorDetails.status})`));
+
         return Promise.reject(error);
     },
 );
