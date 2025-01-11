@@ -18,6 +18,7 @@ import CategoryEdit from "@/pages/admin/Categories/CategoryEdit";
 import CommentList from "@/pages/admin/Comments/CommentList";
 import CommentCreate from "@/pages/admin/Comments/CommentCreate";
 import CommentEdit from "@/pages/admin/Comments/CommentEdit";
+import ArticleDetail from "@/pages/admin/Articles/ArticleDetail";
 
 // import paths
 import { paths } from "./paths";
@@ -65,6 +66,10 @@ export const router = createBrowserRouter([
             {
                 path: paths.admin.editArticle,
                 element: <ArticleEdit />,
+            },
+            {
+                path: paths.admin.articleDetail,
+                element: <ArticleDetail />,
             },
             {
                 path: paths.admin.categories,

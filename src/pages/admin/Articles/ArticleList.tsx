@@ -1,31 +1,24 @@
 // src/pages/admin/Articles/ArticleList.tsx
 import React, { useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { fetchArticles, deleteArticle, resetArticles } from "@/store/modules/articles/articlesSlice";
 import { paths } from "@/routes/paths";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { formatIndonesianDateTime } from "@/utils"; // Import the helper function
+import { formatIndonesianDateTime } from "@/utils";
+import { Tooltip } from "bootstrap";
 
 const ArticleList: React.FC = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const { articles, loading, error, hasMore, page, pageSize } = useAppSelector((state) => state.articles);
+    const user = useAppSelector((state) => state.auth.user);
 
     const loadMoreArticles = useCallback(() => {
         if (!loading && hasMore) {
             dispatch(fetchArticles({ page, pageSize }));
         }
     }, [dispatch, loading, hasMore, page, pageSize]);
-
-    const renderDateTime = (dateTimeString: string) => {
-        const { date, time } = formatIndonesianDateTime(dateTimeString);
-        return (
-            <>
-                {date} <br />
-                <small>{time}</small>
-            </>
-        );
-    };
 
     useEffect(() => {
         dispatch(resetArticles());
@@ -34,6 +27,10 @@ const ArticleList: React.FC = () => {
             dispatch(resetArticles());
         };
     }, [dispatch]);
+
+    const handleEdit = (documentId: string) => {
+        navigate(paths.admin.editArticle.replace(":documentId", documentId));
+    };
 
     const handleDelete = (documentId: string) => {
         if (window.confirm("Are you sure you want to delete this article?")) {
@@ -47,6 +44,20 @@ const ArticleList: React.FC = () => {
                     // Handle error (e.g., display an error message)
                 });
         }
+    };
+
+    const handleViewDetail = (documentId: string) => {
+        navigate(paths.admin.articleDetail.replace(":documentId", documentId));
+    };
+
+    const renderDateTime = (dateTimeString: string) => {
+        const { date, time } = formatIndonesianDateTime(dateTimeString);
+        return (
+            <>
+                {date} <br />
+                <small>{time}</small>
+            </>
+        );
     };
 
     return (
@@ -77,39 +88,45 @@ const ArticleList: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {articles.map((article, index) => (
-                            <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{article.title}</td>
-                                <td>{article.category ? article.category.name : "N/A"}</td>
-                                <td>{article.comments ? article.comments.length : 0}</td>
-                                <td>{article.user ? article.user.username : "N/A"}</td>
-                                <td>{renderDateTime(article.createdAt)}</td>
-                                <td>{renderDateTime(article.publishedAt)}</td>
-                                <td>
-                                    {article.documentId && (
-                                        <>
-                                            <Link
-                                                to={article.documentId ? paths.admin.editArticle.replace(":documentId", article.documentId) : "#"}
-                                                className="btn btn-secondary"
-                                            >
-                                                Edit
-                                            </Link>
-                                            <button
-                                                className="btn btn-danger btn-sm"
-                                                onClick={() => {
-                                                    if (article.documentId) {
-                                                        handleDelete(article.documentId);
-                                                    }
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
-                                        </>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
+                        {articles.map((article, index) => {
+                            const isAuthor = article.user.id === user?.id;
+                            return (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{article.title}</td>
+                                    <td>{article.category ? article.category.name : "N/A"}</td>
+                                    <td>{article.comments ? article.comments.length : 0}</td>
+                                    <td>{article.user ? article.user.username : "N/A"}</td>
+                                    <td>{renderDateTime(article.createdAt)}</td>
+                                    <td>{renderDateTime(article.publishedAt)}</td>
+                                    <td>
+                                        <button onClick={() => handleViewDetail(article.documentId || "")} className="btn btn-info btn-sm">
+                                            View
+                                        </button>
+                                        <button
+                                            onClick={() => handleEdit(article.documentId || "")}
+                                            className={`btn btn-sm ms-2 ${isAuthor ? "btn-secondary" : "btn-outline-secondary disabled"}`}
+                                            data-bs-toggle={!isAuthor ? "tooltip" : ""}
+                                            data-bs-placement="right"
+                                            data-bs-title={!isAuthor ? "You are not authorized to edit this article." : ""}
+                                            // title={!isAuthor ? "You are not authorized to edit this article." : ""}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="btn btn-danger btn-sm ms-2"
+                                            onClick={() => {
+                                                if (article.documentId) {
+                                                    handleDelete(article.documentId);
+                                                }
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </InfiniteScroll>

@@ -4,18 +4,20 @@ import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/art
 
 interface ArticlesState {
     articles: Article[];
+    articleDetail: Article | null; // Add this to store the detail of a single article
     loading: boolean;
     error: string | null;
-    hasMore: boolean; // Add hasMore flag for infinite scrolling
-    page: number; // Add page number for tracking pagination
+    hasMore: boolean;
+    page: number;
     pageSize: number;
 }
 
 const initialState: ArticlesState = {
     articles: [],
+    articleDetail: null,
     loading: false,
     error: null,
-    hasMore: true, // Initially assume there are more articles to fetch
+    hasMore: true,
     page: 1,
     pageSize: 10,
 };
@@ -124,6 +126,9 @@ const articlesSlice = createSlice({
             state.pageSize = 10;
             state.hasMore = true;
         },
+        clearArticleDetail: (state) => {
+            state.articleDetail = null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -145,9 +150,17 @@ const articlesSlice = createSlice({
                 // Remove the deleted article from the state
                 state.articles = state.articles.filter((article) => article.documentId !== action.payload);
             })
+            .addCase(fetchArticleById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
             .addCase(fetchArticleById.fulfilled, (state, action) => {
-                // You can update the state with the fetched article if needed
-                // For example: state.currentArticle = action.payload;
+                state.loading = false;
+                state.articleDetail = action.payload;
+            })
+            .addCase(fetchArticleById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Failed to fetch article";
             })
             .addCase(updateArticle.fulfilled, (state, action) => {
                 const index = state.articles.findIndex(
@@ -170,5 +183,5 @@ const articlesSlice = createSlice({
     },
 });
 
-export const { resetArticles } = articlesSlice.actions;
+export const { resetArticles, clearArticleDetail } = articlesSlice.actions;
 export default articlesSlice.reducer;

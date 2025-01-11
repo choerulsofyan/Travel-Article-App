@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import App from "./App.tsx";
 import store from "./store/store";
 import "./styles/main.scss";
+import "bootstrap/dist/js/bootstrap.bundle.min"; // Import Bootstrap JS with Popper
 import { loadUserFromLocalStorage } from "./store/modules/auth/authSlice";
 
 store.dispatch(loadUserFromLocalStorage());
