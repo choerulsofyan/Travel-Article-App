@@ -2,7 +2,7 @@ import api from "@/api";
 import { ArticleResponse, ArticlesResponse, CreateArticlePayload, CreateOrUpdateArticleResponse, UpdateArticlePayload } from "@/types/articles";
 
 const articlesApi = {
-    getAllArticles: () => api.get<ArticlesResponse>(`/articles`),
+    getAllArticlesWithComments: () => api.get<ArticlesResponse>(`/articles?populate=*`),
     getArticles: (page: number = 1, pageSize: number = 10) =>
         api.get<ArticlesResponse>(`/articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}`),
     createArticle: (payload: CreateArticlePayload) => api.post<CreateOrUpdateArticleResponse>("/articles", payload),

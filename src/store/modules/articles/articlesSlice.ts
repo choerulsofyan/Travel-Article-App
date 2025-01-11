@@ -36,6 +36,22 @@ export const fetchArticles = createAsyncThunk<
     }
 });
 
+export const fetchAllArticlesWithComments = createAsyncThunk<
+    Article[], // Return type (array of all articles)
+    void, // No arguments needed
+    { rejectValue: string }
+>("articles/fetchAllArticlesWithComments", async (_, { rejectWithValue }) => {
+    try {
+        const response = await articlesApi.getAllArticlesWithComments();
+        return response.data.data; // Return all articles with comments
+    } catch (err: any) {
+        if (!err.response) {
+            throw err;
+        }
+        return rejectWithValue(err.response.data.message || "Failed to fetch articles with comments");
+    }
+});
+
 export const createArticle = createAsyncThunk<Article, CreateArticlePayload, { rejectValue: string }>(
     "articles/createArticle",
     async (payload, { rejectWithValue }) => {
@@ -140,6 +156,16 @@ const articlesSlice = createSlice({
                 if (index !== -1) {
                     state.articles[index] = action.payload;
                 }
+            })
+            .addCase(fetchAllArticlesWithComments.fulfilled, (state, action) => {
+                // Assuming you want to replace all articles with the fetched ones:
+                state.articles = action.payload;
+                // You might also want to reset pagination related state:
+                state.page = 1;
+                state.hasMore = true;
+            })
+            .addCase(fetchAllArticlesWithComments.rejected, (state, action) => {
+                state.error = action.payload || "Failed to fetch articles with comments";
             });
     },
 });
