@@ -19,6 +19,7 @@ import CommentList from "@/pages/admin/Comments/CommentList";
 import CommentCreate from "@/pages/admin/Comments/CommentCreate";
 import CommentEdit from "@/pages/admin/Comments/CommentEdit";
 import ArticleDetail from "@/pages/admin/Articles/ArticleDetail";
+import Profile from "@/pages/admin/Profile";
 
 // import paths
 import { paths } from "./paths";
@@ -94,6 +95,10 @@ export const router = createBrowserRouter([
             {
                 path: paths.admin.editComment,
                 element: <CommentEdit />,
+            },
+            {
+                path: paths.admin.profile,
+                element: <Profile />,
             },
         ],
     },

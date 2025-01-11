@@ -14,5 +14,6 @@ export const paths = {
         createComment: "/admin/comments/create", // Add create path
         editComment: "/admin/comments/:documentId/edit", // Add edit path
         articleDetail: "/admin/article/:documentId",
+        profile: "/admin/profile",
     },
 };
