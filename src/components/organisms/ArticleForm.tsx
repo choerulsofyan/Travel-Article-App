@@ -4,7 +4,7 @@ import { createArticle, updateArticle } from "@/store/modules/articles/articlesS
 import { fetchAllCategories } from "@/store/modules/categories/categoriesSlice";
 import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 import { Category } from "@/types/categories";
-import ImageUpload from "@/components/organisms/ImageUpload";
+import ImageUpload from "./ImageUpload";
 import { Image } from "@/types/upload";
 
 interface ArticleFormProps {
@@ -77,17 +77,32 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
             data: { ...formData, category: category },
         };
 
-        const action = article?.documentId ? updateArticle({ documentId: article.documentId, payload }) : createArticle(payload);
-
-        dispatch(action)
-            .unwrap()
-            .then(() => {
-                onSuccess();
-            })
-            .catch((error) => {
-                console.error("Error submitting article:", error);
-                setError("Failed to submit article. Please try again.");
-            });
+        if (article && article.documentId) {
+            dispatch(
+                updateArticle({
+                    documentId: article.documentId,
+                    payload: payload as UpdateArticlePayload,
+                }),
+            )
+                .unwrap()
+                .then(() => {
+                    onSuccess();
+                })
+                .catch((error) => {
+                    console.error("Error updating article:", error);
+                    setError("Failed to update article. Please try again.");
+                });
+        } else {
+            dispatch(createArticle(payload as CreateArticlePayload))
+                .unwrap()
+                .then(() => {
+                    onSuccess();
+                })
+                .catch((error) => {
+                    console.error("Error creating article:", error);
+                    setError("Failed to create article. Please try again.");
+                });
+        }
     };
 
     return (

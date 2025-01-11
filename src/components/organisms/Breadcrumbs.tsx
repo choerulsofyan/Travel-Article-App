@@ -32,13 +32,7 @@ const Breadcrumbs: React.FC = () => {
                 {breadcrumbs.map((breadcrumb, index) => (
                     <li key={breadcrumb.path} className="flex items-center">
                         {index > 0 && <ChevronRightIcon className="h-4 w-4 text-gray-500 me-2" />}
-                        {index < breadcrumbs.length - 1 ? (
-                            <Link to={breadcrumb.path} className="text-blue-500 hover:text-blue-700">
-                                {breadcrumb.name}
-                            </Link>
-                        ) : (
-                            <span className="text-gray-500">{breadcrumb.name}</span>
-                        )}
+                        {index < breadcrumbs.length - 1 ? <>{breadcrumb.name}</> : <span className="text-gray-500">{breadcrumb.name}</span>}
                     </li>
                 ))}
             </ol>
