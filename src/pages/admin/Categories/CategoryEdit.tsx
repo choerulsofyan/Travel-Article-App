@@ -6,6 +6,7 @@ import { paths } from "@/routes/paths";
 import { UpdateCategoryPayload } from "@/types/categories";
 import Header from "@/components/organisms/Header";
 import ErrorDisplay from "@/components/ErrorDisplay";
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 const CategoryEdit: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -68,6 +69,13 @@ const CategoryEdit: React.FC = () => {
         <div>
             <Header title="Edit Category" />
             <div className="p-4 bg-white rounded-lg shadow-md">
+                <button
+                    onClick={() => navigate(-1)} // Go back to the previous page
+                    className="inline-flex items-center px-3 py-1 mb-4 text-sm font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                >
+                    <ChevronLeftIcon className="h-4 w-4 mr-1" />
+                    Back
+                </button>
                 {error && <ErrorDisplay message={error} />}
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>

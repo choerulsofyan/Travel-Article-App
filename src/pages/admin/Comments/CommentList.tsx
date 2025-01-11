@@ -38,7 +38,6 @@ const CommentList: React.FC = () => {
 
     return (
         <div>
-            <Header title="Comments" />
             <div className="px-4 sm:px-6 lg:px-8">
                 <div className="sm:flex sm:items-center justify-content-between py-4">
                     <div className="sm:flex-auto">

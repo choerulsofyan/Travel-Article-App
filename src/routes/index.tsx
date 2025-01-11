@@ -20,6 +20,7 @@ import CommentCreate from "@/pages/admin/Comments/CommentCreate";
 import CommentEdit from "@/pages/admin/Comments/CommentEdit";
 import ArticleDetail from "@/pages/admin/Articles/ArticleDetail";
 import Profile from "@/pages/admin/Profile";
+import NotFound from "@/pages/NotFound";
 
 // import paths
 import { paths } from "@/routes/paths";
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
             {
                 path: paths.register,
                 element: <Register />,
+            },
+            {
+                path: "*",
+                element: <NotFound />,
             },
         ],
     },
@@ -99,6 +104,10 @@ export const router = createBrowserRouter([
             {
                 path: paths.admin.profile,
                 element: <Profile />,
+            },
+            {
+                path: "*",
+                element: <NotFound />,
             },
         ],
     },
