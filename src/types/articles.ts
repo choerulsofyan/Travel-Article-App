@@ -51,7 +51,7 @@ export interface Article extends Timestamped {
     documentId: string;
     title: string;
     description: string;
-    cover_image_url: string; // string | null;
+    cover_image_url: string | null;
     locale: string | null;
     category: Category | null;
     comments: Comment[];
