@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import articlesApi from "@/api/modules/articlesApi";
 import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 
@@ -67,21 +67,20 @@ export const updateArticle = createAsyncThunk<
     }
 });
 
-export const fetchArticleById = createAsyncThunk<
-    Article, // Return type
-    string, // Argument type (article ID)
-    { rejectValue: string }
->("articles/fetchArticleById", async (documentId, { rejectWithValue }) => {
-    try {
-        const response = await articlesApi.getArticle(documentId);
-        return response.data.data; // response.data.data; // Assuming your API returns the article data
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
+export const fetchArticleById = createAsyncThunk<Article, string, { rejectValue: string }>(
+    "articles/fetchArticleById",
+    async (documentId, { rejectWithValue }) => {
+        try {
+            const response = await articlesApi.getArticle(documentId);
+            return response.data.data; // Return the single Article object
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data.message || "Failed to fetch article");
         }
-        return rejectWithValue(err.response.data.message || "Failed to fetch article");
-    }
-});
+    },
+);
 
 export const deleteArticle = createAsyncThunk<
     string, // Return type (documentId of the deleted article)

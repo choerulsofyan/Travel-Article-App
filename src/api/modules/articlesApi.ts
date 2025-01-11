@@ -1,18 +1,12 @@
 import api from "@/api";
-import {
-    Article,
-    ArticleResponse,
-    ArticlesResponse,
-    CreateArticlePayload,
-    CreateOrUpdateArticleResponse,
-    UpdateArticlePayload,
-} from "@/types/articles";
+import { ArticleResponse, ArticlesResponse, CreateArticlePayload, CreateOrUpdateArticleResponse, UpdateArticlePayload } from "@/types/articles";
 
 const articlesApi = {
+    getAllArticles: () => api.get<ArticlesResponse>(`/articles`),
     getArticles: (page: number = 1, pageSize: number = 10) =>
         api.get<ArticlesResponse>(`/articles?pagination[page]=${page}&pagination[pageSize]=${pageSize}`),
     createArticle: (payload: CreateArticlePayload) => api.post<CreateOrUpdateArticleResponse>("/articles", payload),
-    getArticle: (documentId: string) => api.get<ArticleResponse>(`/articles/${documentId}`),
+    getArticle: (documentId: string) => api.get<ArticleResponse>(`/articles/${documentId}?populate=*`),
     updateArticle: (documentId: string, payload: UpdateArticlePayload) => api.put<CreateOrUpdateArticleResponse>(`/articles/${documentId}`, payload),
     deleteArticle: (documentId: string) => api.delete(`/articles/${documentId}`),
 };

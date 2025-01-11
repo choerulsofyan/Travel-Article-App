@@ -36,16 +36,16 @@ export interface Category {
 
 // Article Type
 export interface Article extends Timestamped {
-    id?: number;
-    documentId?: string;
+    id: number;
+    documentId: string;
     title: string;
     description: string;
     cover_image_url: string;
-    locale?: string | null;
-    user?: User;
-    category: Category | null;
-    comments?: Comment[];
-    localizations?: any[]; // Define this more specifically if you have localization data
+    locale: string | null;
+    user: User;
+    category: Category | null; // category can be null based on your API response
+    comments: Comment[];
+    localizations: any[]; // Define this more specifically if you have localization data
 }
 
 // Pagination Meta Data
