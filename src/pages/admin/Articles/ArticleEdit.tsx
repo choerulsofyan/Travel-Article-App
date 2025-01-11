@@ -1,16 +1,17 @@
 // src/pages/admin/Articles/ArticleEdit.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/hooks"; // Import useAppDispatch and useAppSelector
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import ArticleForm from "@/components/organisms/ArticleForm";
 import { fetchArticleById } from "@/store/modules/articles/articlesSlice";
 import { paths } from "@/routes/paths";
 import { Article } from "@/types/articles";
+import Header from "@/components/organisms/Header";
 
 const ArticleEdit: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { documentId } = useParams<{ documentId: string }>(); // Get article ID from URL params
+    const { documentId } = useParams<{ documentId: string }>();
     const [currentArticle, setCurrentArticle] = useState<Article | null>(null);
 
     useEffect(() => {
@@ -22,19 +23,21 @@ const ArticleEdit: React.FC = () => {
                 })
                 .catch((error) => {
                     console.error("Failed to fetch article:", error);
-                    // Handle error, e.g., redirect to an error page or display an error message
+                    navigate(paths.admin.articles);
                 });
         }
     }, [dispatch, documentId]);
 
     const handleSuccess = () => {
-        navigate(paths.admin.articles); // Redirect to articles list after successful update
+        navigate(paths.admin.articles);
     };
 
     return (
         <div>
-            <h2>Edit Article</h2>
-            {currentArticle ? <ArticleForm article={currentArticle} onSuccess={handleSuccess} /> : <div>Loading article...</div>}
+            <Header title="Edit Article" />
+            <div className="p-4 bg-white rounded-lg shadow-md">
+                {currentArticle ? <ArticleForm article={currentArticle} onSuccess={handleSuccess} /> : <div>Loading article...</div>}
+            </div>
         </div>
     );
 };

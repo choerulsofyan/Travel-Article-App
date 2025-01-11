@@ -6,6 +6,8 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import { Bar } from "react-chartjs-2";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Header from "@/components/organisms/Header";
+import { DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -16,10 +18,10 @@ interface ArticleWithCommentsCount {
 
 const Dashboard: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { articles, loading } = useAppSelector((state) => state.articles);
+    const { articles, loading, error } = useAppSelector((state) => state.articles);
     const [mostCommentedArticles, setMostCommentedArticles] = useState<ArticleWithCommentsCount[]>([]);
     const [dataLoaded, setDataLoaded] = useState(false);
-    const chartRef = useRef<HTMLDivElement>(null); // Ref for the chart container
+    const chartRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         dispatch(fetchAllArticlesWithComments())
@@ -29,11 +31,12 @@ const Dashboard: React.FC = () => {
             })
             .catch((error) => {
                 console.error("Failed to fetch articles with comments:", error);
+                // Optionally set an error state here to display an error message
             });
     }, [dispatch]);
 
     useEffect(() => {
-        if (dataLoaded) {
+        if (dataLoaded && articles.length) {
             const articlesWithComments = articles.map((article) => ({
                 articleTitle: article.title,
                 commentCount: article.comments ? article.comments.length : 0,
@@ -42,7 +45,7 @@ const Dashboard: React.FC = () => {
             articlesWithComments.sort((a, b) => b.commentCount - a.commentCount);
             setMostCommentedArticles(articlesWithComments.slice(0, 10));
         }
-    }, [articles, dataLoaded]);
+    }, [dataLoaded, articles]);
 
     const chartData = {
         labels: mostCommentedArticles.map((article) => article.articleTitle),
@@ -58,6 +61,7 @@ const Dashboard: React.FC = () => {
     };
 
     const chartOptions = {
+        responsive: true,
         scales: {
             y: {
                 beginAtZero: true,
@@ -67,31 +71,51 @@ const Dashboard: React.FC = () => {
 
     const handleExportToPdf = async () => {
         if (chartRef.current) {
-            const canvas = await html2canvas(chartRef.current);
+            const canvas = await html2canvas(chartRef.current, { scale: 2 });
             const imgData = canvas.toDataURL("image/png");
 
-            const pdf = new jsPDF();
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = pageWidth - 20;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
             pdf.save("dashboard.pdf");
         }
     };
 
     return (
         <div>
-            <h1>Admin Dashboard</h1>
-
-            <div className="chart-container mb-4" ref={chartRef}>
-                <h2>Most Commented Articles</h2>
-                {dataLoaded && <Bar data={chartData} options={chartOptions} />}
-            </div>
-
-            <button onClick={handleExportToPdf} className="btn btn-primary">
+            <Header title="Admin Dashboard" />
+            <button onClick={handleExportToPdf} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5">
+                <DocumentArrowDownIcon className="h-5 w-5 inline-block me-1" />
                 Export to PDF
             </button>
+            <div className="container mx-auto px-4 py-8">
+                <div className="bg-white shadow rounded-lg p-6 mb-8" ref={chartRef}>
+                    <h2 className="text-2xl font-bold mb-4">Most Commented Articles</h2>
+                    {loading ? (
+                        <div>Loading...</div>
+                    ) : error ? (
+                        <div className="text-red-500">Error loading data</div>
+                    ) : (
+                        dataLoaded && <Bar data={chartData} options={chartOptions} />
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

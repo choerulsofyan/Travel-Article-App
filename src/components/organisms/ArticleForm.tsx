@@ -2,30 +2,22 @@
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createArticle, updateArticle } from "@/store/modules/articles/articlesSlice";
+import { fetchAllCategories } from "@/store/modules/categories/categoriesSlice";
 import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 import { Category } from "@/types/categories";
-import { fetchAllCategories } from "@/store/modules/categories/categoriesSlice";
 import ImageUpload from "./ImageUpload";
 import { Image } from "@/types/upload";
 
 interface ArticleFormProps {
-    article?: Article; // Optional article prop for editing
-    onSuccess: () => void; // Callback function to be called after successful create or update
+    article?: Article;
+    onSuccess: () => void;
 }
 
 const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     const dispatch = useAppDispatch();
-
-    const handleImageUpload = (image: Image) => {
-        setFormData({
-            ...formData,
-            cover_image_url: image.url,
-        });
-    };
-
-    // Fetch categories from Redux store
     const categories = useAppSelector((state) => state.categories.categories);
-    const [loadingCategories, setLoadingCategories] = useState<boolean>(false);
+    const [loadingCategories, setLoadingCategories] = useState(false);
+    const [error, setError] = useState<string | null>(null); // Add error state
 
     const [formData, setFormData] = useState<Omit<CreateArticlePayload["data"], "category"> | Omit<UpdateArticlePayload["data"], "category">>({
         title: article?.title || "",
@@ -38,11 +30,12 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     useEffect(() => {
         if (categories.length === 0) {
             setLoadingCategories(true);
-            dispatch(fetchAllCategories()) // Use fetchAllCategories instead of fetchCategories
+            dispatch(fetchAllCategories())
                 .unwrap()
                 .then(() => setLoadingCategories(false))
                 .catch((error) => {
                     console.error("Error fetching categories:", error);
+                    setError("Failed to fetch categories.");
                     setLoadingCategories(false);
                 });
         }
@@ -65,94 +58,94 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
             [e.target.name]: e.target.value,
         });
     };
+
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCategory(parseInt(e.target.value, 10));
     };
+
+    const handleImageUpload = (image: Image) => {
+        setFormData({
+            ...formData,
+            cover_image_url: image.url,
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError(null); // Clear any previous error
 
-        if (article && article.documentId) {
-            // Update existing article
-            dispatch(
-                updateArticle({
-                    documentId: article.documentId,
-                    payload: {
-                        data: { ...formData, category: category },
-                    },
-                }),
-            )
-                .unwrap()
-                .then(() => {
-                    onSuccess(); // Call the success callback
-                })
-                .catch((error) => {
-                    console.error("Error updating article:", error);
-                    // Handle update error (e.g., display error message)
-                });
-        } else {
-            // Create new article
-            dispatch(createArticle({ data: { ...formData, category: category } }))
-                .unwrap()
-                .then(() => {
-                    onSuccess(); // Call the success callback
-                })
-                .catch((error) => {
-                    console.error("Error creating article:", error);
-                    // Handle create error (e.g., display error message)
-                });
-        }
+        const payload = {
+            data: { ...formData, category: category },
+        };
+
+        const action = article?.documentId ? updateArticle({ documentId: article.documentId, payload }) : createArticle(payload);
+
+        dispatch(action)
+            .unwrap()
+            .then(() => {
+                onSuccess();
+            })
+            .catch((error) => {
+                console.error("Error submitting article:", error);
+                setError("Failed to submit article. Please try again.");
+            });
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-                <label htmlFor="title" className="form-label">
+        <form onSubmit={handleSubmit} className="space-y-6">
+            {error && <div className="text-red-500">{error}</div>}
+
+            <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                     Title
                 </label>
-                <input type="text" className="form-control" id="title" name="title" value={formData.title} onChange={handleChange} required />
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    required
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
             </div>
-            <div className="mb-3">
-                <label htmlFor="description" className="form-label">
+
+            <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                     Description
                 </label>
                 <textarea
-                    className="form-control"
                     id="description"
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
                     required
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
             </div>
-            {/* <div className="mb-3">
-                <label htmlFor="cover_image_url" className="form-label">
-                    Cover Image URL
-                </label>
-                <input
-                    type="text"
-                    className="form-control"
-                    id="cover_image_url"
-                    name="cover_image_url"
-                    value={formData.cover_image_url}
-                    onChange={handleChange}
-                />
-            </div> */}
-            <div className="mb-3">
-                <label htmlFor="cover_image_url" className="form-label">
+
+            <div>
+                <label htmlFor="cover_image_url" className="block text-sm font-medium text-gray-700">
                     Cover Image
                 </label>
                 <ImageUpload onImageUpload={handleImageUpload} />
-                {/* Display image preview if needed */}
-                {formData.cover_image_url && <img src={formData.cover_image_url} alt="Cover Preview" style={{ width: "200px", marginTop: "10px" }} />}
+                {formData.cover_image_url && <img src={formData.cover_image_url} alt="Cover Preview" className="mt-2 w-64" />}
             </div>
-            <div className="mb-3">
-                <label htmlFor="category" className="form-label">
+
+            <div>
+                <label htmlFor="category" className="block text-sm font-medium text-gray-700">
                     Category
                 </label>
                 {loadingCategories ? (
-                    <div>Loading categories...</div>
+                    <div className="mt-1 text-sm text-gray-500">Loading categories...</div>
                 ) : (
-                    <select className="form-select" id="category" name="category" value={category} onChange={handleCategoryChange}>
+                    <select
+                        id="category"
+                        name="category"
+                        value={category}
+                        onChange={handleCategoryChange}
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
                         <option value={0}>Select Category</option>
                         {categories.map((category: Category) => (
                             <option key={category.id} value={category.id}>
@@ -162,7 +155,11 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
                     </select>
                 )}
             </div>
-            <button type="submit" className="btn btn-primary">
+
+            <button
+                type="submit"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
                 {article ? "Update" : "Create"} Article
             </button>
         </form>

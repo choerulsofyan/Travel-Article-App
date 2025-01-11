@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { fetchArticleById, clearArticleDetail } from "@/store/modules/articles/articlesSlice";
 import { formatIndonesianDateTime } from "@/utils";
 import { Article } from "@/types/articles";
+import Header from "@/components/organisms/Header";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 const ArticleDetail: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -23,60 +25,80 @@ const ArticleDetail: React.FC = () => {
     }, [dispatch, documentId]);
 
     if (loading) {
-        return <div>Loading article details...</div>;
+        return <div className="container mx-auto px-4 py-8">Loading article details...</div>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return (
+            <div className="container mx-auto px-4 py-8">
+                <ErrorDisplay message={error} />
+            </div>
+        );
     }
 
     if (!article) {
-        return <div>Article not found.</div>;
+        return <div className="container mx-auto px-4 py-8">Article not found.</div>;
     }
 
     return (
-        <div>
-            <h1>{article.title}</h1>
-            {article.cover_image_url && <img className="w-25" src={article.cover_image_url} alt={article.title} style={{ maxWidth: "100%" }} />}
-            <p>{article.description}</p>
+        <div className="container mx-auto px-4 py-8">
+            <Header title={article.title} />
+            <div className="bg-white shadow rounded-lg p-6">
+                {article.cover_image_url && (
+                    <img src={article.cover_image_url} alt={article.title} className="w-full h-auto object-cover rounded-lg mb-6" />
+                )}
 
-            <p>
-                <strong>Author:</strong> {article.user.username} ({article.user.email})
-            </p>
-            <p>
-                <strong>Category:</strong> {article.category ? article.category.name : "N/A"}
-            </p>
+                <div className="prose prose-lg">
+                    <p>{article.description}</p>
+                </div>
 
-            <p>
-                <strong>Created At:</strong> {formatIndonesianDateTime(article.createdAt).date}{" "}
-                <small>{formatIndonesianDateTime(article.createdAt).time}</small>
-            </p>
-            <p>
-                <strong>Updated At:</strong> {formatIndonesianDateTime(article.updatedAt).date}{" "}
-                <small>{formatIndonesianDateTime(article.updatedAt).time}</small>
-            </p>
-            <p>
-                <strong>Published At:</strong> {formatIndonesianDateTime(article.publishedAt).date}{" "}
-                <small>{formatIndonesianDateTime(article.publishedAt).time}</small>
-            </p>
+                <div className="mt-6">
+                    <p className="text-gray-600">
+                        <span className="font-semibold">Author:</span> {article.user.username} ({article.user.email})
+                    </p>
+                    <p className="text-gray-600">
+                        <span className="font-semibold">Category:</span> {article.category ? article.category.name : "N/A"}
+                    </p>
+                    <p className="text-gray-600">
+                        <span className="font-semibold">Created At:</span> {formatIndonesianDateTime(article.createdAt).date}{" "}
+                        <small>{formatIndonesianDateTime(article.createdAt).time}</small>
+                    </p>
+                    <p className="text-gray-600">
+                        <span className="font-semibold">Updated At:</span> {formatIndonesianDateTime(article.updatedAt).date}{" "}
+                        <small>{formatIndonesianDateTime(article.updatedAt).time}</small>
+                    </p>
+                    <p className="text-gray-600">
+                        <span className="font-semibold">Published At:</span>{" "}
+                        {article.publishedAt ? (
+                            <>
+                                {formatIndonesianDateTime(article.publishedAt).date}{" "}
+                                <small>{formatIndonesianDateTime(article.publishedAt).time}</small>
+                            </>
+                        ) : (
+                            "N/A"
+                        )}
+                    </p>
+                </div>
 
-            <h2>Comments</h2>
-            {article.comments.length > 0 ? (
-                <ul>
-                    {article.comments.map((comment) => (
-                        <li key={comment.id}>
-                            <p>{comment.content}</p>
-                            <p>
-                                <small>
-                                    Posted at: {formatIndonesianDateTime(comment.createdAt).date} {formatIndonesianDateTime(comment.createdAt).time}
-                                </small>
-                            </p>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No comments yet.</p>
-            )}
+                <div className="mt-8">
+                    <h2 className="text-2xl font-bold mb-4">Comments</h2>
+                    {article.comments.length > 0 ? (
+                        <ul className="space-y-4">
+                            {article.comments.map((comment) => (
+                                <li key={comment.id} className="border-b pb-4">
+                                    <p className="mb-2">{comment.content}</p>
+                                    <p className="text-sm text-gray-500">
+                                        Posted at: {formatIndonesianDateTime(comment.createdAt).date}{" "}
+                                        <small>{formatIndonesianDateTime(comment.createdAt).time}</small>
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No comments yet.</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

@@ -4,6 +4,10 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import usersApi from "@/api/modules/usersApi";
 import { UserProfileResponse } from "@/types/users";
 import { formatIndonesianDateTime } from "@/utils";
+import Header from "@/components/organisms/Header";
+import { Link } from "react-router-dom";
+import { paths } from "@/routes/paths";
+import ErrorDisplay from "@/components/ErrorDisplay";
 
 const Profile: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -32,7 +36,11 @@ const Profile: React.FC = () => {
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return (
+            <div>
+                <ErrorDisplay message={error} />
+            </div>
+        );
     }
 
     if (!userProfile) {
@@ -41,58 +49,77 @@ const Profile: React.FC = () => {
 
     return (
         <div>
-            <h1>User Profile</h1>
+            <Header title="User Profile" />
 
-            <div>
-                <h2>Details</h2>
-                <p>
-                    <strong>Username:</strong> {userProfile.username}
-                </p>
-                <p>
-                    <strong>Email:</strong> {userProfile.email}
-                </p>
-            </div>
+            <div className="container mx-auto px-4 py-8">
+                <div className="bg-white shadow rounded-lg p-6 mb-8">
+                    <h2 className="text-2xl font-bold mb-4">Profile Details</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <span className="font-semibold">Username:</span> {userProfile.username}
+                        </div>
+                        <div>
+                            <span className="font-semibold">Email:</span> {userProfile.email}
+                        </div>
+                        <div>{/* <span className="font-semibold">Role:</span> {userProfile.role.name} */}</div>
+                    </div>
+                </div>
 
-            <div>
-                <h2>Articles</h2>
-                {userProfile.articles.length > 0 ? (
-                    <ul>
-                        {userProfile.articles.map((article) => (
-                            <li key={article.id}>
-                                <h3>{article.title}</h3>
-                                <p>Category: {article.category ? article.category.name : "N/A"}</p>
-                                <p>
-                                    Published At: {formatIndonesianDateTime(article.publishedAt).date}{" "}
-                                    <small>{formatIndonesianDateTime(article.publishedAt).time}</small>
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No articles found.</p>
-                )}
-            </div>
+                <div className="bg-white shadow rounded-lg p-6 mb-8">
+                    <h2 className="text-2xl font-bold mb-4">Articles</h2>
+                    {userProfile.articles.length > 0 ? (
+                        <ul className="space-y-4">
+                            {userProfile.articles.map((article) => (
+                                <li key={article.id} className="border-b pb-4">
+                                    <h3 className="text-xl font-semibold">
+                                        <Link to={paths.admin.articleDetail.replace(":documentId", article.documentId || "")}>{article.title}</Link>
+                                    </h3>
+                                    {article.category && <p className="text-gray-600">Category: {article.category.name}</p>}
+                                    <p className="text-sm text-gray-500">
+                                        Published:{" "}
+                                        {article.publishedAt ? (
+                                            <>
+                                                {formatIndonesianDateTime(article.publishedAt).date}{" "}
+                                                <small>{formatIndonesianDateTime(article.publishedAt).time}</small>
+                                            </>
+                                        ) : (
+                                            "N/A"
+                                        )}
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No articles found.</p>
+                    )}
+                </div>
 
-            <div>
-                <h2>Comments</h2>
-                {userProfile.comments.length > 0 ? (
-                    <ul>
-                        {userProfile.comments.map((comment) => (
-                            <li key={comment.id}>
-                                <p>{comment.content}</p>
-                                {comment.article && <p>Article: {comment.article ? comment.article.title : "N/A"}</p>}
-                                <p>
-                                    <small>
-                                        Posted at: {formatIndonesianDateTime(comment.createdAt).date}{" "}
-                                        {formatIndonesianDateTime(comment.createdAt).time}
-                                    </small>
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No comments found.</p>
-                )}
+                <div className="bg-white shadow rounded-lg p-6">
+                    <h2 className="text-2xl font-bold mb-4">Comments</h2>
+                    {userProfile.comments.length > 0 ? (
+                        <ul className="space-y-4">
+                            {userProfile.comments.map((comment) => (
+                                <li key={comment.id} className="border-b pb-4">
+                                    <p className="mb-2">{comment.content}</p>
+                                    {comment.article && (
+                                        <p className="text-gray-600">
+                                            On:{" "}
+                                            <Link to={paths.public.articleDetail.replace(":documentId", comment.article.documentId || "")}>
+                                                {comment.article.title}
+                                            </Link>
+                                        </p>
+                                    )}
+                                    <p className="text-sm text-gray-500">
+                                        Posted: {formatIndonesianDateTime(comment.createdAt).date}{" "}
+                                        <small>{formatIndonesianDateTime(comment.createdAt).time}</small>
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No comments found.</p>
+                    )}
+                </div>
             </div>
         </div>
     );
