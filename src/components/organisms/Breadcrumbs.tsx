@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { paths } from "@/routes/paths";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
