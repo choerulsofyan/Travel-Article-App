@@ -3,7 +3,6 @@ import { LoginCredentials, RegisterCredentials, AuthSuccessResponse, AuthErrorRe
 
 const authApi = {
     login: (credentials: LoginCredentials) => api.post<AuthSuccessResponse>("/auth/local", credentials), // Adjust the endpoint if needed
-
     register: (credentials: RegisterCredentials) => api.post<AuthSuccessResponse>("/auth/local/register", credentials), // Adjust the endpoint if needed
 };
 
