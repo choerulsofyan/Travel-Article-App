@@ -7,6 +7,7 @@ import { paths } from "@/routes/paths";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { formatIndonesianDateTime } from "@/utils";
 import { Tooltip } from "bootstrap";
+import { stringify } from "csv-stringify/browser/esm";
 
 const ArticleList: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -60,13 +61,45 @@ const ArticleList: React.FC = () => {
         );
     };
 
+    const exportToCSV = () => {
+        const csvColumns = ["No", "Title", "Category", "Comments", "Author", "Created At", "Published At"];
+
+        const csvData = articles.map((article, index) => [
+            index + 1,
+            article.title,
+            article.category ? article.category.name : "N/A",
+            article.comments ? article.comments.length : 0,
+            article.user ? article.user.username : "N/A",
+            formatIndonesianDateTime(article.createdAt).date,
+            formatIndonesianDateTime(article.publishedAt).date,
+        ]);
+
+        stringify([csvColumns, ...csvData], (err, output) => {
+            if (err) {
+                console.error("Error generating CSV:", err);
+                return;
+            }
+
+            const blob = new Blob([output], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute("download", "articles.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    };
+
     return (
         <div>
             <h1>Articles</h1>
             <Link to={paths.admin.createArticle} className="btn btn-primary">
                 Create Article
             </Link>
-
+            <button className="btn btn-success" onClick={exportToCSV}>
+                Export to CSV
+            </button>
             <InfiniteScroll
                 dataLength={articles.length}
                 next={loadMoreArticles}
