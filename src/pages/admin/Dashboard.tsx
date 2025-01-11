@@ -1,9 +1,11 @@
 // src/pages/admin/Dashboard.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import { fetchAllArticlesWithComments } from "@/store/modules/articles/articlesSlice"; // Import the new thunk
+import { fetchAllArticlesWithComments } from "@/store/modules/articles/articlesSlice";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -15,20 +17,32 @@ interface ArticleWithCommentsCount {
 const Dashboard: React.FC = () => {
     const dispatch = useAppDispatch();
     const { articles, loading } = useAppSelector((state) => state.articles);
+    const [mostCommentedArticles, setMostCommentedArticles] = useState<ArticleWithCommentsCount[]>([]);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const chartRef = useRef<HTMLDivElement>(null); // Ref for the chart container
 
     useEffect(() => {
-        // Fetch all articles with comments when the component mounts
-        dispatch(fetchAllArticlesWithComments());
+        dispatch(fetchAllArticlesWithComments())
+            .unwrap()
+            .then(() => {
+                setDataLoaded(true);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch articles with comments:", error);
+            });
     }, [dispatch]);
 
-    // Calculate most commented articles directly in the component body
-    const mostCommentedArticles = articles
-        .map((article) => ({
-            articleTitle: article.title,
-            commentCount: article.comments ? article.comments.length : 0,
-        }))
-        .sort((a, b) => b.commentCount - a.commentCount)
-        .slice(0, 10);
+    useEffect(() => {
+        if (dataLoaded) {
+            const articlesWithComments = articles.map((article) => ({
+                articleTitle: article.title,
+                commentCount: article.comments ? article.comments.length : 0,
+            }));
+
+            articlesWithComments.sort((a, b) => b.commentCount - a.commentCount);
+            setMostCommentedArticles(articlesWithComments.slice(0, 10));
+        }
+    }, [articles, dataLoaded]);
 
     const chartData = {
         labels: mostCommentedArticles.map((article) => article.articleTitle),
@@ -51,16 +65,33 @@ const Dashboard: React.FC = () => {
         },
     };
 
+    const handleExportToPdf = async () => {
+        if (chartRef.current) {
+            const canvas = await html2canvas(chartRef.current);
+            const imgData = canvas.toDataURL("image/png");
+
+            const pdf = new jsPDF();
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+            pdf.save("dashboard.pdf");
+        }
+    };
+
     return (
         <div>
             <h1>Admin Dashboard</h1>
 
-            <div className="chart-container mb-4">
+            <div className="chart-container mb-4" ref={chartRef}>
                 <h2>Most Commented Articles</h2>
-                {loading ? <p>Loading data...</p> : <Bar data={chartData} options={chartOptions} />}
+                {dataLoaded && <Bar data={chartData} options={chartOptions} />}
             </div>
 
-            {/* Other dashboard data and charts can go here */}
+            <button onClick={handleExportToPdf} className="btn btn-primary">
+                Export to PDF
+            </button>
         </div>
     );
 };
