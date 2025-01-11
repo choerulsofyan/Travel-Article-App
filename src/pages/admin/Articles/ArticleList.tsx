@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { fetchArticles, deleteArticle, resetArticles } from "@/store/modules/articles/articlesSlice";
 import { paths } from "@/routes/paths";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { formatIndonesianDateTime } from "@/utils"; // Import the helper function
 
 const ArticleList: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -15,6 +16,16 @@ const ArticleList: React.FC = () => {
             dispatch(fetchArticles({ page, pageSize }));
         }
     }, [dispatch, loading, hasMore, page, pageSize]);
+
+    const renderDateTime = (dateTimeString: string) => {
+        const { date, time } = formatIndonesianDateTime(dateTimeString);
+        return (
+            <>
+                {date} <br />
+                <small>{time}</small>
+            </>
+        );
+    };
 
     useEffect(() => {
         dispatch(resetArticles());
@@ -55,16 +66,26 @@ const ArticleList: React.FC = () => {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>Document ID</th>
+                            <th>No</th>
                             <th>Title</th>
+                            <th>Category</th>
+                            <th>Comments</th>
+                            <th>Author</th>
+                            <th>Created At</th>
+                            <th>Published At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {articles.map((article) => (
-                            <tr key={article.documentId}>
-                                <td>{article.documentId}</td>
+                        {articles.map((article, index) => (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
                                 <td>{article.title}</td>
+                                <td>{article.category ? article.category.name : "N/A"}</td>
+                                <td>{article.comments ? article.comments.length : 0}</td>
+                                <td>{article.user ? article.user.username : "N/A"}</td>
+                                <td>{renderDateTime(article.createdAt)}</td>
+                                <td>{renderDateTime(article.publishedAt)}</td>
                                 <td>
                                     {article.documentId && (
                                         <>
@@ -75,7 +96,7 @@ const ArticleList: React.FC = () => {
                                                 Edit
                                             </Link>
                                             <button
-                                                className="btn btn-danger ms-2"
+                                                className="btn btn-danger btn-sm"
                                                 onClick={() => {
                                                     if (article.documentId) {
                                                         handleDelete(article.documentId);

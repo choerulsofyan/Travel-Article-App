@@ -1,4 +1,6 @@
-// src/types/article.ts
+import { Category } from "./categories";
+import { User } from "./auth";
+import { Comment } from "./comments";
 
 // Common interface for objects with timestamps
 interface Timestamped {
@@ -7,8 +9,7 @@ interface Timestamped {
     publishedAt: string;
 }
 
-// User Type
-export interface User extends Timestamped {
+/* export interface User extends Timestamped {
     id: number;
     documentId: string;
     username: string;
@@ -19,7 +20,6 @@ export interface User extends Timestamped {
     locale: string | null;
 }
 
-// Comment Type
 export interface Comment extends Timestamped {
     id: number;
     documentId: string;
@@ -27,15 +27,13 @@ export interface Comment extends Timestamped {
     locale: string | null;
 }
 
-// Category Type
 export interface Category {
     id: number;
     name: string;
-    // Add other fields if your category has more data
-}
+} */
 
 // Article Type
-export interface Article extends Timestamped {
+/* export interface Article extends Timestamped {
     id: number;
     documentId: string;
     title: string;
@@ -46,6 +44,19 @@ export interface Article extends Timestamped {
     category: Category | null; // category can be null based on your API response
     comments: Comment[];
     localizations: any[]; // Define this more specifically if you have localization data
+} */
+
+export interface Article extends Timestamped {
+    id: number;
+    documentId: string;
+    title: string;
+    description: string;
+    cover_image_url: string | null;
+    locale: string | null;
+    category: Category | null;
+    comments: Comment[];
+    localizations: any[]; // Define this more specifically if you have localization data
+    user: User; // Add user field
 }
 
 // Pagination Meta Data
