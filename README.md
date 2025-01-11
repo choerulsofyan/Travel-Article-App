@@ -1,50 +1,61 @@
-# React + TypeScript + Vite
+# Travel Article App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React application with TypeScript for managing travel articles using CRUD operations.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Prerequisites:**
 
-## Expanding the ESLint configuration
+- Node.js and npm (or yarn) installed on your system. You can download them from the official website: https://nodejs.org/
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+**Steps:**
 
-- Configure the top-level `parserOptions` property like this:
+1. Clone this repository:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+    ```bash
+    git clone https://github.com/choerulsofyan/Travel-Article-App.git
+    ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. Navigate to the project directory:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+    ```bash
+    cd travel-article-app
+    ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+3. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+## Running the Development Server
+
+1. Start the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+    This will start the development server and open your app in a web browser (usually at http://localhost:5173/).
+
+## Building for Production
+
+1. Build the production-ready version of your app:
+
+    ```bash
+    npm run build
+    ```
+
+    This will create an optimized production build in the `dist` folder.
+
+## Description
+
+This application allows users to create, read, update, and delete travel articles. It uses React for building the user interface, TypeScript for type safety, and Vite for a fast development experience.
+
+## Technologies Used
+
+- React
+- Redux
+- TypeScript
+- Vite
+- SCSS
