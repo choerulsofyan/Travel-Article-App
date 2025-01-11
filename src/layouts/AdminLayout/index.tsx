@@ -1,8 +1,6 @@
-// src/layouts/AdminLayout.tsx
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "@/components/organisms/Sidebar";
-// import Header from "@/components/organisms/Header";
 import Breadcrumbs from "@/components/organisms/Breadcrumbs";
 
 const AdminLayout: React.FC = () => {

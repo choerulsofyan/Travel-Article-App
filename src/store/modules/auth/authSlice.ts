@@ -1,10 +1,8 @@
-// src/store/modules/auth/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "@/store/rootReducer"; // Import RootState if you need to access other slices
+import { RootState } from "@/store/rootReducer";
 import authApi from "@/api/modules/authApi";
 import { LoginCredentials, RegisterCredentials, AuthSuccessResponse, User } from "@/types/auth";
 
-// Define the initial state for the auth slice
 interface AuthState {
     isAuthenticated: boolean;
     loading: boolean;
@@ -21,29 +19,21 @@ const initialState: AuthState = {
     error: null,
 };
 
-// Async Thunks for API Calls
-// --- LOGIN ---
-export const login = createAsyncThunk<
-    AuthSuccessResponse, // Return type of the payload creator (success)
-    LoginCredentials, // First argument to the payload creator (credentials)
-    { rejectValue: string; state: RootState } // Types for `rejectWithValue` and `getState`
->("auth/login", async (credentials, { rejectWithValue, getState }) => {
-    try {
-        // Access current state if needed:
-        // const currentToken = getState().auth.token;
-
-        const response = await authApi.login(credentials);
-        return response.data; // The fulfilled action will have the payload: { jwt: ..., user: ... }
-    } catch (err: any) {
-        if (!err.response) {
-            throw err; // Re-throw if it's not an API error (e.g., network issue)
+export const login = createAsyncThunk<AuthSuccessResponse, LoginCredentials, { rejectValue: string; state: RootState }>(
+    "auth/login",
+    async (credentials, { rejectWithValue }) => {
+        try {
+            const response = await authApi.login(credentials);
+            return response.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data.error.message);
         }
-        // Extract the error message from the API response and return it using rejectWithValue
-        return rejectWithValue(err.response.data.error.message);
-    }
-});
+    },
+);
 
-// --- REGISTER ---
 export const register = createAsyncThunk<AuthSuccessResponse, RegisterCredentials, { rejectValue: string }>(
     "auth/register",
     async (credentials, { rejectWithValue }) => {
@@ -59,7 +49,6 @@ export const register = createAsyncThunk<AuthSuccessResponse, RegisterCredential
     },
 );
 
-// Auth Slice
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -69,8 +58,8 @@ const authSlice = createSlice({
             state.user = null;
             state.token = null;
             state.error = null;
-            localStorage.removeItem("user"); // Or remove the user from wherever you store it
-            localStorage.removeItem("token"); // Or remove the token from wherever you store it
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
         },
         setUser: (state, action: PayloadAction<User>) => {
             state.isAuthenticated = true;
@@ -90,10 +79,9 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // --- LOGIN ---
             .addCase(login.pending, (state) => {
                 state.loading = true;
-                state.error = null; // Clear any previous errors
+                state.error = null;
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false;
@@ -101,16 +89,15 @@ const authSlice = createSlice({
                 state.token = action.payload.jwt;
                 state.user = action.payload.user;
                 localStorage.setItem("user", JSON.stringify(action.payload.user));
-                localStorage.setItem("token", action.payload.jwt); // Consider security implications
+                localStorage.setItem("token", action.payload.jwt);
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
                 state.isAuthenticated = false;
                 state.token = null;
                 state.user = null;
-                state.error = action.payload || "Login failed"; // Use the rejected value (error message) or a default message
+                state.error = action.payload || "Login failed";
             })
-            // --- REGISTER ---
             .addCase(register.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -133,6 +120,5 @@ const authSlice = createSlice({
     },
 });
 
-// Export actions and reducer
 export const { logout, setUser, clearError, loadUserFromLocalStorage } = authSlice.actions;
 export default authSlice.reducer;

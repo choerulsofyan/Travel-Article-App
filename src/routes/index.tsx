@@ -22,7 +22,7 @@ import ArticleDetail from "@/pages/admin/Articles/ArticleDetail";
 import Profile from "@/pages/admin/Profile";
 
 // import paths
-import { paths } from "./paths";
+import { paths } from "@/routes/paths";
 
 // Import ProtectedRoute
 import ProtectedRoute from "@/components/ProtectedRoute";

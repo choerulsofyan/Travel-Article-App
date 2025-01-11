@@ -1,6 +1,5 @@
-// src/components/Loader.tsx
 import React from "react";
-import { ClipLoader } from "react-spinners"; // Or any other spinner you prefer
+import { ClipLoader } from "react-spinners";
 
 const TableLoader: React.FC = () => {
     return (

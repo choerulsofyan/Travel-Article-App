@@ -1,4 +1,3 @@
-// src/store/modules/categories/categoriesSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import categoriesApi from "@/api/modules/categoriesApi";
 import { Category, CreateCategoryPayload, UpdateCategoryPayload } from "@/types/categories";
@@ -21,21 +20,20 @@ const initialState: CategoriesState = {
     pageSize: 10,
 };
 
-export const fetchAllCategories = createAsyncThunk<
-    Category[], // Return type (array of all categories)
-    void, // No arguments needed
-    { rejectValue: string }
->("categories/fetchAllCategories", async (_, { rejectWithValue }) => {
-    try {
-        const response = await categoriesApi.getAllCategories(); // Assuming this fetches all
-        return response.data.data;
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
+export const fetchAllCategories = createAsyncThunk<Category[], void, { rejectValue: string }>(
+    "categories/fetchAllCategories",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await categoriesApi.getAllCategories();
+            return response.data.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data.message || "Failed to fetch categories");
         }
-        return rejectWithValue(err.response.data.message || "Failed to fetch categories");
-    }
-});
+    },
+);
 
 export const fetchCategories = createAsyncThunk<
     { categories: Category[]; page: number; pageSize: number },
@@ -102,8 +100,8 @@ export const deleteCategory = createAsyncThunk<string, string, { rejectValue: st
     "categories/deleteCategory",
     async (documentId, { rejectWithValue }) => {
         try {
-            await categoriesApi.deleteCategory(documentId); // Assuming it returns no content
-            return documentId; // Return documentId for removing from state
+            await categoriesApi.deleteCategory(documentId);
+            return documentId;
         } catch (err: any) {
             if (!err.response) {
                 throw err;
@@ -113,7 +111,6 @@ export const deleteCategory = createAsyncThunk<string, string, { rejectValue: st
     },
 );
 
-// --- Slice ---
 const categoriesSlice = createSlice({
     name: "categories",
     initialState,
@@ -153,9 +150,7 @@ const categoriesSlice = createSlice({
             .addCase(deleteCategory.fulfilled, (state, action) => {
                 state.categories = state.categories.filter((category) => category.documentId !== action.payload);
             })
-            // Add cases for fetchCategoryById if needed
             .addCase(fetchCategoryById.fulfilled, (state, action) => {
-                // Update state with the fetched category, if necessary
                 const index = state.categories.findIndex((category) => category.documentId === action.payload.documentId);
                 if (index !== -1) {
                     state.categories[index] = action.payload;
@@ -164,7 +159,6 @@ const categoriesSlice = createSlice({
                 }
             })
             .addCase(fetchAllCategories.fulfilled, (state, action) => {
-                // Replace the existing categories with all fetched categories
                 state.categories = action.payload;
             })
             .addCase(fetchAllCategories.rejected, (state, action) => {

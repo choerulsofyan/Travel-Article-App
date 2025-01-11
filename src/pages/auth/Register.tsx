@@ -1,4 +1,3 @@
-// src/pages/auth/Register.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -43,10 +42,9 @@ const Register: React.FC = () => {
         dispatch(register(formData))
             .unwrap()
             .then(() => {
-                navigate(paths.admin.dashboard); // Redirect to admin dashboard or other page
+                navigate(paths.admin.dashboard);
             })
             .catch((error) => {
-                // Handle registration error (e.g., display error message)
                 console.error("Registration error:", error);
             });
     };

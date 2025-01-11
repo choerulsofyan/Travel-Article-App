@@ -1,6 +1,5 @@
-// src/pages/admin/Profile.tsx
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
 import usersApi from "@/api/modules/usersApi";
 import { UserProfileResponse } from "@/types/users";
 import { formatIndonesianDateTime } from "@/utils";
@@ -61,7 +60,7 @@ const Profile: React.FC = () => {
                         <div>
                             <span className="font-semibold">Email:</span> {userProfile.email}
                         </div>
-                        <div>{/* <span className="font-semibold">Role:</span> {userProfile.role.name} */}</div>
+                        <div>{}</div>
                     </div>
                 </div>
 

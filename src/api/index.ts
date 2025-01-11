@@ -19,7 +19,7 @@ api.interceptors.request.use(
     },
 );
 
-// Response interceptor (optional) - Handle unauthorized errors
+// Response interceptor - Handle unauthorized errors
 api.interceptors.response.use(
     (response) => response,
     (error) => {

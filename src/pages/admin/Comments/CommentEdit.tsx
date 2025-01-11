@@ -1,4 +1,3 @@
-// src/pages/admin/Comments/CommentEdit.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "@/hooks";
@@ -26,7 +25,6 @@ const CommentEdit: React.FC = () => {
                 })
                 .catch((error) => {
                     console.error("Error fetching comment:", error);
-                    // Handle error (e.g., display an error message or redirect)
                 });
         }
     }, [dispatch, documentId]);
@@ -50,11 +48,10 @@ const CommentEdit: React.FC = () => {
             )
                 .unwrap()
                 .then(() => {
-                    navigate(paths.admin.comments); // Redirect to comments list
+                    navigate(paths.admin.comments);
                 })
                 .catch((error) => {
                     console.error("Error updating comment:", error);
-                    // Handle error (e.g., display an error message)
                 });
         }
     };
@@ -69,7 +66,7 @@ const CommentEdit: React.FC = () => {
                     </label>
                     <textarea className="form-control" id="content" name="content" value={formData.content} onChange={handleChange} required />
                 </div>
-                {/* You might not need an Article field here for editing */}
+                {}
                 <button type="submit" className="btn btn-primary">
                     Update
                 </button>

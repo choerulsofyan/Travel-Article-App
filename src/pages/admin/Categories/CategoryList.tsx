@@ -1,4 +1,3 @@
-// src/pages/admin/Categories/CategoryList.tsx
 import React, { useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -7,7 +6,6 @@ import { paths } from "@/routes/paths";
 import InfiniteScroll from "react-infinite-scroll-component";
 import TableLoader from "@/components/TableLoader";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-import Header from "@/components/organisms/Header";
 import ErrorDisplay from "@/components/ErrorDisplay";
 
 const CategoryList: React.FC = () => {
@@ -33,12 +31,9 @@ const CategoryList: React.FC = () => {
         if (window.confirm("Are you sure you want to delete this category?")) {
             dispatch(deleteCategory(documentId))
                 .unwrap()
-                .then(() => {
-                    // Optional: Display a success message
-                })
+                .then(() => {})
                 .catch((error) => {
                     console.error("Error deleting category:", error);
-                    // Handle error (e.g., display an error message)
                 });
         }
     };
@@ -49,7 +44,7 @@ const CategoryList: React.FC = () => {
 
     return (
         <div>
-            {/* <Header title="Categories" /> */}
+            {}
             <div className="px-4 sm:px-6 lg:px-8">
                 <div className="sm:flex sm:items-center justify-content-between py-4">
                     <div className="sm:flex-auto">
@@ -94,7 +89,7 @@ const CategoryList: React.FC = () => {
                                         </thead>
                                         <tbody className="divide-y divide-gray-200 bg-white">
                                             {categories.map((category, index) => (
-                                                <tr key={category.documentId} className={index % 2 === 0 ? undefined : "bg-gray-50"}>
+                                                <tr key={index} className={index % 2 === 0 ? undefined : "bg-gray-50"}>
                                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 text-center">
                                                         {index + 1}
                                                     </td>

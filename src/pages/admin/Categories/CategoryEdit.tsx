@@ -1,7 +1,6 @@
-// src/pages/admin/Categories/CategoryEdit.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
 import { fetchCategoryById, updateCategory } from "@/store/modules/categories/categoriesSlice";
 import { paths } from "@/routes/paths";
 import { UpdateCategoryPayload } from "@/types/categories";

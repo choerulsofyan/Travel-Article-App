@@ -3,7 +3,7 @@ interface AppConfig {
 }
 
 const config: AppConfig = {
-    apiBaseUrl: "https://extra-brooke-yeremiadio-46b2183e.koyeb.app/api", // import.meta.env.VITE_API_BASE_URL,
+    apiBaseUrl: "https://extra-brooke-yeremiadio-46b2183e.koyeb.app/api",
 };
 
 if (!config.apiBaseUrl) {

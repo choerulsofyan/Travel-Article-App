@@ -1,10 +1,9 @@
-// src/pages/admin/Comments/CommentList.tsx
 import React, { useEffect, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { fetchComments, deleteComment, resetComments } from "@/store/modules/comments/commentsSlice";
 import InfiniteScroll from "react-infinite-scroll-component";
 import TableLoader from "@/components/TableLoader";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import Header from "@/components/organisms/Header";
 import ErrorDisplay from "@/components/ErrorDisplay";
 
@@ -30,12 +29,9 @@ const CommentList: React.FC = () => {
         if (window.confirm("Are you sure you want to delete this comment?")) {
             dispatch(deleteComment(documentId))
                 .unwrap()
-                .then(() => {
-                    // Optional: Display a success message
-                })
+                .then(() => {})
                 .catch((error) => {
                     console.error("Error deleting comment:", error);
-                    // Handle error (e.g., display an error message)
                 });
         }
     };
@@ -79,18 +75,13 @@ const CommentList: React.FC = () => {
                                         </thead>
                                         <tbody className="divide-y divide-gray-200 bg-white">
                                             {comments.map((comment, index) => (
-                                                <tr key={comment.documentId} className={index % 2 === 0 ? undefined : "bg-gray-50"}>
+                                                <tr key={index} className={index % 2 === 0 ? undefined : "bg-gray-50"}>
                                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 text-center">
                                                         {index + 1}
                                                     </td>
                                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{comment.content}</td>
                                                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-center text-sm font-medium sm:pr-6 space-x-2 w-32">
-                                                        {/* <button
-                                                            onClick={() => handleEdit(category.documentId)}
-                                                            className="text-yellow-500 hover:text-yellow-700"
-                                                        >
-                                                            <PencilSquareIcon className="h-5 w-5" />
-                                                        </button> */}
+                                                        {}
                                                         <button
                                                             className="text-red-500 hover:text-red-700"
                                                             onClick={() => handleDelete(comment.documentId)}

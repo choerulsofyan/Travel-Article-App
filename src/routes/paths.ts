@@ -11,8 +11,8 @@ export const paths = {
         createCategory: "/admin/categories/create",
         editCategory: "/admin/categories/:documentId/edit",
         comments: "/admin/comments",
-        createComment: "/admin/comments/create", // Add create path
-        editComment: "/admin/comments/:documentId/edit", // Add edit path
+        createComment: "/admin/comments/create",
+        editComment: "/admin/comments/:documentId/edit",
         articleDetail: "/admin/article/:documentId",
         profile: "/admin/profile",
     },

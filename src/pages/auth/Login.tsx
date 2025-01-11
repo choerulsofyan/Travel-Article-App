@@ -1,4 +1,3 @@
-// src/pages/auth/Login.tsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -53,7 +52,7 @@ const Login: React.FC = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="identifier" className="block text-sm font-medium text-gray-700">
-                            Email or Username
+                            Email
                         </label>
                         <input
                             type="text"

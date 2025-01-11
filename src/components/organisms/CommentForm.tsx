@@ -1,4 +1,3 @@
-// src/components/organisms/CommentForm.tsx
 import React, { useState } from "react";
 import { useAppDispatch } from "@/hooks";
 import { createComment } from "@/store/modules/comments/commentsSlice";
@@ -23,8 +22,8 @@ const CommentForm: React.FC<CommentFormProps> = ({ articleId, onCommentSubmitted
 
         try {
             await dispatch(createComment({ data: { content, article: articleId } })).unwrap();
-            setContent(""); // Clear the form
-            onCommentSubmitted(); // Notify parent component
+            setContent("");
+            onCommentSubmitted();
         } catch (err: any) {
             setError(err.response?.data?.error?.message || "Failed to create comment");
         }

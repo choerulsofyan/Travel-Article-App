@@ -1,6 +1,5 @@
-// src/api/modules/commentsApi.ts
-import api from "../index";
-import { CommentsResponse, CommentResponse, CreateCommentPayload, UpdateCommentPayload } from "../../types/comments";
+import api from "@/api";
+import { CommentsResponse, CommentResponse, CreateCommentPayload, UpdateCommentPayload } from "@/types/comments";
 
 const commentsApi = {
     getComments: (page: number = 1, pageSize: number = 10) =>

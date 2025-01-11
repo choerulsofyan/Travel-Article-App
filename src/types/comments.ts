@@ -1,4 +1,3 @@
-// src/types/comments.ts
 import { Article } from "./articles";
 
 export interface Comment {
@@ -34,7 +33,7 @@ export interface CommentResponse {
 export interface CreateCommentPayload {
     data: {
         content: string;
-        article: number; // ID of the article the comment belongs to
+        article: number;
     };
 }
 

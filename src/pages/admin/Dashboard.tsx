@@ -1,4 +1,3 @@
-// src/pages/admin/Dashboard.tsx
 import React, { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { fetchAllArticlesWithComments } from "@/store/modules/articles/articlesSlice";
@@ -31,7 +30,6 @@ const Dashboard: React.FC = () => {
             })
             .catch((error) => {
                 console.error("Failed to fetch articles with comments:", error);
-                // Optionally set an error state here to display an error message
             });
     }, [dispatch]);
 

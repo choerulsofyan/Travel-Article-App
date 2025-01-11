@@ -1,4 +1,3 @@
-// src/components/organisms/Sidebar.tsx
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";

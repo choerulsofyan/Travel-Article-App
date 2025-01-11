@@ -1,11 +1,10 @@
-// src/components/organisms/ArticleForm.tsx
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { createArticle, updateArticle } from "@/store/modules/articles/articlesSlice";
 import { fetchAllCategories } from "@/store/modules/categories/categoriesSlice";
 import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/articles";
 import { Category } from "@/types/categories";
-import ImageUpload from "./ImageUpload";
+import ImageUpload from "@/components/organisms/ImageUpload";
 import { Image } from "@/types/upload";
 
 interface ArticleFormProps {
@@ -17,7 +16,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
     const dispatch = useAppDispatch();
     const categories = useAppSelector((state) => state.categories.categories);
     const [loadingCategories, setLoadingCategories] = useState(false);
-    const [error, setError] = useState<string | null>(null); // Add error state
+    const [error, setError] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<Omit<CreateArticlePayload["data"], "category"> | Omit<UpdateArticlePayload["data"], "category">>({
         title: article?.title || "",
@@ -72,7 +71,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ article, onSuccess }) => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError(null); // Clear any previous error
+        setError(null);
 
         const payload = {
             data: { ...formData, category: category },

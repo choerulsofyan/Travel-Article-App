@@ -1,14 +1,11 @@
-// src/pages/public/Articles/ArticleDetail.tsx
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { fetchArticleById, clearArticleDetail } from "@/store/modules/articles/articlesSlice";
 import { formatIndonesianDateTime } from "@/utils";
-import { Article } from "@/types/articles";
 import Header from "@/components/organisms/Header";
 import ErrorDisplay from "@/components/ErrorDisplay";
 import CommentForm from "@/components/organisms/CommentForm";
-import { User } from "@/types/auth";
 
 const ArticleDetail: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -54,7 +51,7 @@ const ArticleDetail: React.FC = () => {
             <Header title={article.title} />
             <div className="bg-white shadow rounded-lg p-6">
                 {article.cover_image_url && (
-                    <img src={article.cover_image_url} alt={article.title} className="w-full h-auto object-cover rounded-lg mb-6" />
+                    <img src={article.cover_image_url} alt={article.title} className="w-52 h-auto object-cover rounded-lg mb-6" />
                 )}
 
                 <div className="prose prose-lg">

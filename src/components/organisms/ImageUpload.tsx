@@ -1,4 +1,3 @@
-// src/components/organisms/ImageUpload.tsx
 import React, { useState } from "react";
 import uploadApi from "@/api/modules/uploadApi";
 import { Image } from "@/types/upload";
@@ -22,7 +21,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
 
         try {
             const response = await uploadApi.uploadImage(file);
-            const uploadedImage = response.data[0]; // Access the array directly
+            const uploadedImage = response.data[0];
 
             onImageUpload(uploadedImage);
         } catch (err: any) {

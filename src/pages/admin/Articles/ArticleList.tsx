@@ -1,4 +1,3 @@
-// src/pages/admin/Articles/ArticleList.tsx
 import React, { useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/hooks";
@@ -7,7 +6,6 @@ import { paths } from "@/routes/paths";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { formatIndonesianDateTime } from "@/utils";
 import { stringify } from "csv-stringify/browser/esm";
-import Header from "@/components/organisms/Header";
 import { TrashIcon, PencilSquareIcon, EyeIcon, PlusIcon, DocumentArrowDownIcon } from "@heroicons/react/24/outline";
 import TableLoader from "@/components/TableLoader";
 import ErrorDisplay from "@/components/ErrorDisplay";
@@ -36,12 +34,9 @@ const ArticleList: React.FC = () => {
         if (window.confirm("Are you sure you want to delete this article?")) {
             dispatch(deleteArticle(documentId))
                 .unwrap()
-                .then(() => {
-                    // Optional: Display a success message
-                })
+                .then(() => {})
                 .catch((error) => {
                     console.error("Error deleting article:", error);
-                    // Handle error (e.g., display an error message)
                 });
         }
     };
@@ -51,10 +46,6 @@ const ArticleList: React.FC = () => {
             if (article.user.id === user?.id) {
                 navigate(paths.admin.editArticle.replace(":documentId", article.documentId));
             } else {
-                // option 1: we can add the logic to show the tooltip in here
-                // option 2: we can use conditional rendering, example:
-                // {article.user.id === user?.id && <button>Edit</button>}
-                // or you can choose another option
             }
         }
     };

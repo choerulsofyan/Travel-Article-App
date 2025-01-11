@@ -1,4 +1,3 @@
-// src/pages/admin/Articles/ArticleCreate.tsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ArticleForm from "@/components/organisms/ArticleForm";

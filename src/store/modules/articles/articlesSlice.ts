@@ -4,7 +4,7 @@ import { Article, CreateArticlePayload, UpdateArticlePayload } from "@/types/art
 
 interface ArticlesState {
     articles: Article[];
-    articleDetail: Article | null; // Add this to store the detail of a single article
+    articleDetail: Article | null;
     loading: boolean;
     error: string | null;
     hasMore: boolean;
@@ -38,28 +38,27 @@ export const fetchArticles = createAsyncThunk<
     }
 });
 
-export const fetchAllArticlesWithComments = createAsyncThunk<
-    Article[], // Return type (array of all articles)
-    void, // No arguments needed
-    { rejectValue: string }
->("articles/fetchAllArticlesWithComments", async (_, { rejectWithValue }) => {
-    try {
-        const response = await articlesApi.getAllArticlesWithComments();
-        return response.data.data; // Return all articles with comments
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
+export const fetchAllArticlesWithComments = createAsyncThunk<Article[], void, { rejectValue: string }>(
+    "articles/fetchAllArticlesWithComments",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await articlesApi.getAllArticlesWithComments();
+            return response.data.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data.message || "Failed to fetch articles with comments");
         }
-        return rejectWithValue(err.response.data.message || "Failed to fetch articles with comments");
-    }
-});
+    },
+);
 
 export const createArticle = createAsyncThunk<Article, CreateArticlePayload, { rejectValue: string }>(
     "articles/createArticle",
     async (payload, { rejectWithValue }) => {
         try {
             const response = await articlesApi.createArticle(payload);
-            return response.data.data; // Your API returns the created article
+            return response.data.data;
         } catch (err: any) {
             if (!err.response) {
                 throw err;
@@ -69,28 +68,27 @@ export const createArticle = createAsyncThunk<Article, CreateArticlePayload, { r
     },
 );
 
-export const updateArticle = createAsyncThunk<
-    Article, // Return type
-    { documentId: string; payload: UpdateArticlePayload }, // Argument type (id and payload)
-    { rejectValue: string }
->("articles/updateArticle", async ({ documentId, payload }, { rejectWithValue }) => {
-    try {
-        const response = await articlesApi.updateArticle(documentId, payload);
-        return response.data.data; // Assuming your API returns the updated article
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
+export const updateArticle = createAsyncThunk<Article, { documentId: string; payload: UpdateArticlePayload }, { rejectValue: string }>(
+    "articles/updateArticle",
+    async ({ documentId, payload }, { rejectWithValue }) => {
+        try {
+            const response = await articlesApi.updateArticle(documentId, payload);
+            return response.data.data;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data.message || "Failed to update article");
         }
-        return rejectWithValue(err.response.data.message || "Failed to update article");
-    }
-});
+    },
+);
 
 export const fetchArticleById = createAsyncThunk<Article, string, { rejectValue: string }>(
     "articles/fetchArticleById",
     async (documentId, { rejectWithValue }) => {
         try {
             const response = await articlesApi.getArticle(documentId);
-            return response.data.data; // Return the single Article object
+            return response.data.data;
         } catch (err: any) {
             if (!err.response) {
                 throw err;
@@ -100,21 +98,20 @@ export const fetchArticleById = createAsyncThunk<Article, string, { rejectValue:
     },
 );
 
-export const deleteArticle = createAsyncThunk<
-    string, // Return type (documentId of the deleted article)
-    string, // Argument type (documentId)
-    { rejectValue: string }
->("articles/deleteArticle", async (documentId, { rejectWithValue }) => {
-    try {
-        await articlesApi.deleteArticle(documentId);
-        return documentId; // Return the documentId on success
-    } catch (err: any) {
-        if (!err.response) {
-            throw err;
+export const deleteArticle = createAsyncThunk<string, string, { rejectValue: string }>(
+    "articles/deleteArticle",
+    async (documentId, { rejectWithValue }) => {
+        try {
+            await articlesApi.deleteArticle(documentId);
+            return documentId;
+        } catch (err: any) {
+            if (!err.response) {
+                throw err;
+            }
+            return rejectWithValue(err.response.data.message || "Failed to delete article");
         }
-        return rejectWithValue(err.response.data.message || "Failed to delete article");
-    }
-});
+    },
+);
 
 const articlesSlice = createSlice({
     name: "articles",
@@ -147,7 +144,6 @@ const articlesSlice = createSlice({
                 state.error = action.payload || "Failed to fetch articles";
             })
             .addCase(deleteArticle.fulfilled, (state, action) => {
-                // Remove the deleted article from the state
                 state.articles = state.articles.filter((article) => article.documentId !== action.payload);
             })
             .addCase(fetchArticleById.pending, (state) => {
@@ -163,17 +159,13 @@ const articlesSlice = createSlice({
                 state.error = action.payload || "Failed to fetch article";
             })
             .addCase(updateArticle.fulfilled, (state, action) => {
-                const index = state.articles.findIndex(
-                    (article) => article.documentId === action.payload.documentId, // Use documentId for comparison
-                );
+                const index = state.articles.findIndex((article) => article.documentId === action.payload.documentId);
                 if (index !== -1) {
                     state.articles[index] = action.payload;
                 }
             })
             .addCase(fetchAllArticlesWithComments.fulfilled, (state, action) => {
-                // Assuming you want to replace all articles with the fetched ones:
                 state.articles = action.payload;
-                // You might also want to reset pagination related state:
                 state.page = 1;
                 state.hasMore = true;
             })

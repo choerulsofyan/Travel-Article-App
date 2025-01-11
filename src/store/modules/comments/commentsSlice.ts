@@ -1,4 +1,3 @@
-// src/store/modules/comments/commentsSlice.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import commentsApi from "@/api/modules/commentsApi";
 import { Comment, CreateCommentPayload, UpdateCommentPayload } from "@/types/comments";
@@ -97,7 +96,6 @@ export const deleteComment = createAsyncThunk<string, string, { rejectValue: str
     },
 );
 
-// --- Slice ---
 const commentsSlice = createSlice({
     name: "comments",
     initialState,
@@ -137,9 +135,7 @@ const commentsSlice = createSlice({
             .addCase(deleteComment.fulfilled, (state, action) => {
                 state.comments = state.comments.filter((comment) => comment.documentId !== action.payload);
             })
-            // Handle fetchCommentById if you need it in the UI
             .addCase(fetchCommentById.fulfilled, (state, action) => {
-                // Example: Add the fetched comment to the state (if not already present)
                 const commentExists = state.comments.some((comment) => comment.documentId === action.payload.documentId);
                 if (!commentExists) {
                     state.comments.push(action.payload);

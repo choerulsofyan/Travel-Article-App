@@ -1,4 +1,3 @@
-// src/components/organisms/Breadcrumbs.tsx
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { paths } from "@/routes/paths";

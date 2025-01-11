@@ -1,4 +1,3 @@
-// src/components/ErrorDisplay.tsx
 import React from "react";
 
 interface ErrorDisplayProps {

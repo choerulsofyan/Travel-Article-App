@@ -1,5 +1,3 @@
-// src/types/categories.ts
-
 export interface Category {
     id: number;
     documentId: string;
@@ -27,19 +25,19 @@ export interface CategoriesResponse {
 
 export interface CategoryResponse {
     data: Category;
-    meta: Record<string, any>; // You can define a more specific type if needed
+    meta: Record<string, any>;
 }
 
 export interface CreateCategoryPayload {
     data: {
         name: string;
-        description?: string | null; // Optional description
+        description?: string | null;
     };
 }
 
 export interface UpdateCategoryPayload {
     data: {
         name?: string;
-        description?: string | null; // Optional description
+        description?: string | null;
     };
 }

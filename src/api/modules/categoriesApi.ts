@@ -1,4 +1,3 @@
-// src/api/modules/categoriesApi.ts
 import api from "@/api";
 import { CategoriesResponse, CategoryResponse, CreateCategoryPayload, UpdateCategoryPayload } from "@/types/categories";
 
