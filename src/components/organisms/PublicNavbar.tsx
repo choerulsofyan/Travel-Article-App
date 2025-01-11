@@ -7,7 +7,7 @@ const PublicNavbar: React.FC = () => {
     const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
     return (
-        <nav className="bg-white p-4 shadow-md">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white p-4 shadow-md">
             <div className="container mx-auto flex items-center justify-between">
                 <NavLink to={paths.home} className="text-lg font-bold text-gray-800">
                     Travel Article App

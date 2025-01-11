@@ -6,7 +6,7 @@ const PublicLayout: React.FC = () => {
     return (
         <div className="bg-gray-100 min-h-screen">
             <PublicNavbar />
-            <main className="container mx-auto px-4 py-8">
+            <main className="container mx-auto px-4 py-0">
                 <Outlet />
             </main>
         </div>
